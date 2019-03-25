@@ -53,18 +53,57 @@ module.exports.loop = function () {
         }
     }
 
-    var HOME = 'W7N7';
+    var myRoomName = Game.spawns.Spawn1;
 
-    function defendRoom(roomName) {
-    var hostiles = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS);
-    if(hostiles.length > 0) {
-        var username = hostiles[0].owner.username;
-        Game.notify(`User ${username} spotted in room ${roomName}`);
-        var towers = Game.rooms[roomName].find(
-            FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
-        towers.forEach(tower => tower.attack(hostiles[0]));
+    // function defendRoom(W7N7) {
+    // var hostiles = Game.rooms[HOME].find(FIND_HOSTILE_CREEPS);
+    // if(hostiles.length > 0) {
+    //     var username = hostiles[0].owner.username;
+    //     Game.notify(`User ${username} spotted in room ${roomName}`);
+    //     var towers = Game.rooms[HOME].find(
+    //         FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
+    //     towers.forEach(tower => tower.attack(hostiles[0]));
+    // }
+
+    //TOWER CODE
+
+    var towers = Game.rooms.W7N7.find(FIND_STRUCTURES, {filter: (s) =>
+      s.structureType == STRUCTURE_TOWER});
+    for (let tower of towers) {
+      var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+      if (target != undefined) {
+        tower.attack(target);
+      }
     }
-}
+
+
+    var hostiles = Game.rooms[myRoomName].find(FIND_HOSTILE_CREEPS);
+    var towers = Game.rooms[myRoomName].find(FIND_MY_STRUCTURES, {filter:
+      {structureType: STRUCTURE_TOWER}});
+
+      //if there are hostiles - attakc them
+      if(hostiles.length > 0) {
+        var username = hostiles[0].owner.username;
+        Game.notify(`User ${username} spotted in room ${myRoomName}`);
+        towers.forEach(tower => tower.attack(hostiles[0]));
+        console.log("ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ");
+      }
+
+      //if there are no hostiles....
+      if(hostiles.length == 0) {
+        //....first heal any damaged creeps
+        for (let name in Game.creeps) {
+          // get the creep object
+          var creep = Game.creeps[name];
+          if (creep.hits < creep.hitsMax) {
+            towers.forEach(tower => tower.heal(creep));
+            console.log("Tower is healing Creeps.");
+          }
+        }
+      }
+// ############## END OF TOWER ###############################
+
+
     // setup some minimum numbers for different roles
     var minimumNumberOfHarvesters = 3;
     var minimumNumberOfUpgraders = 1;
@@ -141,7 +180,7 @@ module.exports.loop = function () {
         // try to spawn one
         name = Game.spawns.Spawn1.createLongDistanceHarvester(energy, 3, HOME, 'W8N7', 0, 'longDistanceHarvesterW8N7');
     }
-    
+
 
     // print name to console if spawning was a success
     // name > 0 would not work since string > 0 returns false
