@@ -1,3 +1,7 @@
+// Major errors with the screep logic in this role thus far. Screeps currently
+// get stuck moving back and forth either in a random zone of the room or back
+// and forth across the room borders.
+
 module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
@@ -17,7 +21,7 @@ module.exports = {
             // if in home room
             if (creep.room.name == creep.memory.home) {
                 // find long term storage
-                var warehouse = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                var warehouse = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                     filter: (s) => (s.structureType == STRUCTURE_CONTAINER
                                  || s.structureType == STRUCTURE_STORAGE)
                                  && s.store.energy < s.storeCapacity

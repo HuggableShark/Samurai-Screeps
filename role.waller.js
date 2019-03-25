@@ -20,11 +20,14 @@ module.exports = {
             var walls = creep.room.find(FIND_STRUCTURES, {
                 filter: (s) => s.structureType == STRUCTURE_WALL
             });
+            var ramparts = creep.room.find(FIND_STRUCTURES, {
+                filter: (s) => s.structureType == STRUCTURE_RAMPART
+            });
 
             var target = undefined;
 
             // loop with increasing percentages
-            for (let percentage = 0.0001; percentage <= 1; percentage = percentage + 0.0001){
+            for (let percentage = 0.00001; percentage <= 1; percentage = percentage + 0.00001){
                 for (let wall of walls ) {
                     if (wall.hits / wall.hitsMax < percentage) {
                         target = wall;

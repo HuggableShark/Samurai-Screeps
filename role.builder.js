@@ -13,11 +13,7 @@ module.exports = {
             // switch state
             creep.memory.working = true;
         }
-        // else if (creep.memory.working == false) {
-        //     if (creep.withdraw(creep.room.storage, _.findKey(creep.room.storage.store)) == ERR_NOT_IN_RANGE) {
-        //         creep.moveTo(creep.room.storage)
-        //     };
-        // }
+
 
         // if creep is supposed to transfer energy to the spawn
         else if (creep.memory.working == true) {
@@ -31,14 +27,26 @@ module.exports = {
                 roleUpgrader.run(creep);
             }
         }
-        // if creep is supposed to harvest energy from source
+
+        // if creep is supposed to harvest energy from source or pull from store
         else {
             // find closest source
             var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            var warehouse = creep.pos.findClosestByPath(creep.room.find(FIND_STRUCTURES, {
+                filter: (s) => s.structureType == STRUCTURE_STORAGE
+                            || s.structureType == STRUCTURE_STORAGE
+            }));
+            if (creep.memory.working == false) {
+                if (creep.withdraw(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(warehouse);
+                }
+            }
             // try to harvest energy, if the source is not in range
-            if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+            else {
+                if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
                 // move towards the source
                 creep.moveTo(source);
+              }
             }
         }
     }

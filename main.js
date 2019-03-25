@@ -66,14 +66,14 @@ module.exports.loop = function () {
     }
 }
     // setup some minimum numbers for different roles
-    var minimumNumberOfHarvesters = 4;
+    var minimumNumberOfHarvesters = 3;
     var minimumNumberOfUpgraders = 1;
     var minimumNumberOfBuilders = 1;
     var minimumNumberOfRepairers = 1;
     var minimumNumberOfWallers = 1;
-    var minimumNumberOfAmmoMules = 3;
-    var minimumNumberOfLongDistanceHarvestersW7N4 = 1;
-    var minimumNumberOfLongDistanceHarvestersW6N3 = 1;
+    var minimumNumberOfAmmoMules = 2;
+    var minimumNumberOfLongDistanceHarvestersW7N6 = 1;
+    var minimumNumberOfLongDistanceHarvestersW8N7 = 1;
 
     // count the number of creeps alive for each role
     // _.sum will count the number of properties in Game.creeps filtered by the
@@ -84,10 +84,10 @@ module.exports.loop = function () {
     var numberOfRepairers = _.sum(Game.creeps, (c) => c.memory.role == 'repairer');
     var numberOfWallers = _.sum(Game.creeps, (c) => c.memory.role == 'waller');
     var numberOfAmmoMules = _.sum(Game.creeps, (c) => c.memory.role == 'ammoMule');
-    var numberOfLongDistanceHarvestersW7N4 = _.sum(Game.creeps, (c) =>
-        c.memory.role == 'longDistanceHarvester' && c.memory.target == 'W7N4');
-    var numberOfLongDistanceHarvestersW6N3 = _.sum(Game.creeps, (c) =>
-        c.memory.role == 'longDistanceHarvester' && c.memory.target == 'W6N3');
+    var numberOfLongDistanceHarvestersW7N6 = _.sum(Game.creeps, (c) =>
+        c.memory.role == 'longDistanceHarvester' && c.memory.target == 'W7N6');
+    var numberOfLongDistanceHarvestersW8N7 = _.sum(Game.creeps, (c) =>
+        c.memory.role == 'longDistanceHarvester' && c.memory.target == 'W8N7');
     var numberOfTowers = Game.rooms.W7N7.find(
             FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
 
@@ -127,24 +127,21 @@ module.exports.loop = function () {
         name = Game.spawns.Spawn1.createCustomCreep(energy, 'waller');
     }
     // if not enough ammoMules
-    else if (numberOfAmmoMules < minimumNumberOfAmmoMules && numberOfTowers < 1) {
+    else if (numberOfAmmoMules < minimumNumberOfAmmoMules) {
         // try to spawn one
         name = Game.spawns.Spawn1.createCustomCreep(energy, 'ammoMule');
     }
     // if not enough longDistanceHarvesters for W7N4
-    else if (numberOfLongDistanceHarvestersW7N4 < minimumNumberOfLongDistanceHarvestersW7N4) {
+    else if (numberOfLongDistanceHarvestersW7N6 < minimumNumberOfLongDistanceHarvestersW7N6) {
         // try to spawn one
-        name = Game.spawns.Spawn1.createLongDistanceHarvester(energy, 3, HOME, 'W7N4', 0);
+        name = Game.spawns.Spawn1.createLongDistanceHarvester(energy, 3, HOME, 'W7N6', 0, 'longDistanceHarvesterW7N6');
     }
     // if not enough longDistanceHarvesters for W6N3
-    else if (numberOfLongDistanceHarvestersW6N3 < minimumNumberOfLongDistanceHarvestersW6N3) {
+    else if (numberOfLongDistanceHarvestersW8N7 < minimumNumberOfLongDistanceHarvestersW8N7) {
         // try to spawn one
-        name = Game.spawns.Spawn1.createLongDistanceHarvester(energy, 3, HOME, 'W6N3', 0);
+        name = Game.spawns.Spawn1.createLongDistanceHarvester(energy, 3, HOME, 'W8N7', 0, 'longDistanceHarvesterW8N7');
     }
-    else {
-        // else try to spawn a builder
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'builder');
-    }
+    
 
     // print name to console if spawning was a success
     // name > 0 would not work since string > 0 returns false

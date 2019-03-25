@@ -17,7 +17,7 @@ module.exports = {
         // if creep is supposed to transfer energy to a structure
         if (creep.memory.working == true) {
             // find closest tower, container, or extension which is not full
-            var warehouse = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            var warehouse = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                 // the second argument for findClosestByPath is an object which takes
                 // a property called filter which can be a function
                 // we use the arrow operator to define it
@@ -58,7 +58,7 @@ module.exports = {
         }
         // If everything is full, go build
         else {
-            roleRepairer.run;
+            roleRepairer.run(creep);
         }
     }
 };

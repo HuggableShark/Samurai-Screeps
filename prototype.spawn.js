@@ -19,12 +19,15 @@ module.exports = function() {
             var nameFromRole = (roleName + Game.time);
 
             // create creep with the created body and the given role
-            return this.createCreep(body, nameFromRole, { role: roleName, working: false });
+            return this.createCreep(body, nameFromRole, { 
+                role: roleName, 
+                working: false 
+            });
         };
 
     // create a new function for StructureSpawn
     StructureSpawn.prototype.createLongDistanceHarvester =
-        function (energy, numberOfWorkParts, home, target, sourceIndex) {
+        function (energy, numberOfWorkParts, home, target, sourceIndex, rolename) {
             // create a body with the specified number of WORK parts and one MOVE part per non-MOVE part
             var body = [];
             for (let i = 0; i < numberOfWorkParts; i++) {
@@ -43,7 +46,7 @@ module.exports = function() {
             }
 
             // create creep with the created body
-            return this.createCreep(body, undefined, {
+            return this.createCreep(body, 'longDistanceHarvester', {
                 role: 'longDistanceHarvester',
                 home: home,
                 target: target,

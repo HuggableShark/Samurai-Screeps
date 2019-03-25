@@ -1,4 +1,4 @@
-var roleUpgrader = require('role.upgrader');
+var roleBuilder = require('role.builder');
 
 module.exports = {
     // a function to run the logic for this role
@@ -14,10 +14,12 @@ module.exports = {
             creep.memory.working = true;
         }
 
-        // if creep is supposed to transfer energy to the spawn
+        // Find all non-wall structures in order of HP
         if (creep.memory.working == true) {
             var structures = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (s) => s.hitsMax && s.structureType != STRUCTURE_WALL
+                filter: (s) => s.hits < s.hitsMax
+                            && s.structureType != STRUCTURE_WALL
+                            && s.structureType != STRUCTURE_RAMPART
             });
 
             if (structures != undefined) {

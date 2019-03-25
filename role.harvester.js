@@ -1,3 +1,5 @@
+var roleBuilder = require('role.builder');
+
 module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
@@ -32,6 +34,9 @@ module.exports = {
                     // move towards it
                     creep.moveTo(structure);
                 }
+            }
+            else {
+                roleBuilder.run(creep);
             }
         }
         // if creep is supposed to harvest energy from source
