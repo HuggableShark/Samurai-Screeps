@@ -7,9 +7,10 @@ var roleRepairer = require('role.repairer');
 var roleWaller = require('role.waller');
 var roleAmmoMule = require('role.ammoMule');
 var roleLongDistanceHarvester = require('role.longDistanceHarvester');
+var tower = require('role.tower');
 
 module.exports.loop = function () {
-    // check for memory entries of died creeps by iterating over Memory.creeps
+    // check for memory entries of dead creeps by iterating over Memory.creeps
     for (let name in Memory.creeps) {
         // and checking if the creep is still alive
         if (Game.creeps[name] == undefined) {
@@ -52,63 +53,41 @@ module.exports.loop = function () {
             roleLongDistanceHarvester.run(creep);
         }
     }
+    // run tower code
+    var myRoomsHash = Game.rooms;
+    for(var roomName in myRoomsHash) {
+      var thisRoom = myRoomsHash[roomName];
+      var roomTowers = thisRoom.find(FIND_MY_STRUCTURES, {
+        filter: (structure) => {
+          return structure.structureType == STRUCTURE_TOWER
+                                         && (structure.energy > 9)
+        }
+      })
+        for (var towerIterator = 0; towerIterator < roomTowers.length; towerIterator++) {
+          var thisTower = roomTowers[towerIterator];
+          tower.activate(thisTower);
+      }
+    }
 
-//     var myRoomName = Game.spawns.Spawn1;
-//
-//     // function defendRoom(W7N7) {
-//     // var hostiles = Game.rooms[HOME].find(FIND_HOSTILE_CREEPS);
-//     // if(hostiles.length > 0) {
-//     //     var username = hostiles[0].owner.username;
-//     //     Game.notify(`User ${username} spotted in room ${roomName}`);
-//     //     var towers = Game.rooms[HOME].find(
-//     //         FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
-//     //     towers.forEach(tower => tower.attack(hostiles[0]));
-//     // }
-//
-//     //TOWER CODE
-//
-//     var towers = Game.rooms.W7N7.find(FIND_STRUCTURES, {filter: (s) =>
-//       s.structureType == STRUCTURE_TOWER});
-//     for (let tower of towers) {
-//       var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-//       if (target != undefined) {
-//         tower.attack(target);
-//       }
-//     }
-//
-//
-//     var hostiles = Game.rooms[myRoomName].find(FIND_HOSTILE_CREEPS);
-//     var towers = Game.rooms[myRoomName].find(FIND_MY_STRUCTURES, {filter:
-//       {structureType: STRUCTURE_TOWER}});
-//
-//       //if there are hostiles - attakc them
-//       if(hostiles.length > 0) {
-//         var username = hostiles[0].owner.username;
-//         Game.notify(`User ${username} spotted in room ${myRoomName}`);
-//         towers.forEach(tower => tower.attack(hostiles[0]));
-//         console.log("ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ");
-//       }
-//
-//       //if there are no hostiles....
-//       if(hostiles.length == 0) {
-//         //....first heal any damaged creeps
-//         for (let name in Game.creeps) {
-//           // get the creep object
-//           var creep = Game.creeps[name];
-//           if (creep.hits < creep.hitsMax) {
-//             towers.forEach(tower => tower.heal(creep));
-//             console.log("Tower is healing Creeps.");
-//           }
-//         }
-//       }
-// // ############## END OF TOWER ###############################
+    var myRoomName = Game.roomName;
+    var HOME = 'W7N7';
+
+    // function defendRoom(HOME) {
+    // var hostiles = Game.rooms[HOME].find(FIND_HOSTILE_CREEPS);
+    // if(hostiles.length > 0) {
+    //     var username = hostiles[0].owner.username;
+    //     Game.notify(`User ${username} spotted in room ${roomName}`);
+    //     var towers = Game.rooms[HOME].find(
+    //         FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
+    //     towers.forEach(tower => tower.attack(hostiles[0]));
+    // }
 
 
     // setup some minimum numbers for different roles
     var minimumNumberOfHarvesters = 3;
     var minimumNumberOfUpgraders = 1;
     var minimumNumberOfBuilders = 1;
-    var minimumNumberOfRepairers = 1;
+    var minimumNumberOfRepairers = 2;
     var minimumNumberOfWallers = 1;
     var minimumNumberOfAmmoMules = 2;
     var minimumNumberOfLongDistanceHarvestersW7N6 = 1;
