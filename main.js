@@ -90,8 +90,8 @@ module.exports.loop = function () {
     var minimumNumberOfRepairers = 2;
     var minimumNumberOfWallers = 1;
     var minimumNumberOfAmmoMules = 2;
-    var minimumNumberOfLongDistanceHarvestersW7N6 = 1;
-    var minimumNumberOfLongDistanceHarvestersW8N7 = 1;
+    var minimumNumberOfLongDistanceHarvestersW7N6 = 2;
+    var minimumNumberOfLongDistanceHarvestersW8N7 = 2;
 
     // count the number of creeps alive for each role
     // _.sum will count the number of properties in Game.creeps filtered by the

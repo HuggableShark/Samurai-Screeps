@@ -19,9 +19,9 @@ module.exports = function() {
             var nameFromRole = (roleName + Game.time);
 
             // create creep with the created body and the given role
-            return this.createCreep(body, nameFromRole, { 
-                role: roleName, 
-                working: false 
+            return this.createCreep(body, nameFromRole, {
+                role: roleName,
+                working: false
             });
         };
 
@@ -54,4 +54,14 @@ module.exports = function() {
                 working: false
             });
         };
+    // Static Harvester spawn code: 5x WORK, 1 CARRY, 1 MOVE parts
+    StructureSpawn.prototype.createStaticHarvester =
+      function (energy, roleName) {
+        var body = [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE];
+        var nameFromRole = (roleName + Game.time);
+        return this.createStaticHarvester(body, nameFromRole, {
+          role: roleName,
+          working: false
+        });
+      }
 };

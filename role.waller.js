@@ -65,7 +65,6 @@ module.exports = {
         // if creep is supposed to harvest energy from source
         else {
             // find closest source
-            var sourcesInRoom = creep.room.find(FIND_SOURCES);
             var closestSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
                 filter: (s) => s.energy > 0
             });
