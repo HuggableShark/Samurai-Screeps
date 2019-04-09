@@ -2,9 +2,6 @@
 //
 // Currently working to integrate into main code
 //
-//
-//
-//
 module.exports = {
   // a function to run the logic for this role
   /** @param {Creep} creep **/

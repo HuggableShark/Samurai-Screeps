@@ -9,7 +9,7 @@ module.exports = {
       // switch state
       creep.memory.working = false;
     }
-    // if creep is harvesting energy but is full
+    // if creep is fully stocked
     else if (creep.memory.working == false && creep.carry.energy == creep.carryCapacity) {
       // switch state
       creep.memory.working = true;
@@ -37,5 +37,19 @@ module.exports = {
         }
       }
     }
+    // Otherwise, stock up
+    else {
+      var containersInRoom = creep.room.find(FIND_STRUCTURES, {
+        filter: (structure) => {
+          return (structure.structureType == STRUCTURE_CONTAINER)
+          && (structure.store[RESOURCE_ENERGY] > 0);
+        }
+      });
+      var targetContainer = creep.pos.findClosestByPath(containersInRoom);
+      if (targetContainer) {
+        if (creep.withdraw(targetContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(targetContainer);
+        }
+      }
   }
 };

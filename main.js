@@ -72,17 +72,6 @@ module.exports.loop = function () {
     var myRoomName = Game.roomName;
     var HOME = 'W7N7';
 
-    // function defendRoom(HOME) {
-    // var hostiles = Game.rooms[HOME].find(FIND_HOSTILE_CREEPS);
-    // if(hostiles.length > 0) {
-    //     var username = hostiles[0].owner.username;
-    //     Game.notify(`User ${username} spotted in room ${roomName}`);
-    //     var towers = Game.rooms[HOME].find(
-    //         FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
-    //     towers.forEach(tower => tower.attack(hostiles[0]));
-    // }
-
-
     // setup some minimum numbers for different roles
     var minimumNumberOfHarvesters = 3;
     var minimumNumberOfUpgraders = 1;
@@ -92,6 +81,11 @@ module.exports.loop = function () {
     var minimumNumberOfAmmoMules = 2;
     var minimumNumberOfLongDistanceHarvestersW7N6 = 2;
     var minimumNumberOfLongDistanceHarvestersW8N7 = 2;
+    /*
+    // ADD WHEN INTEGRATING CONTAINER HARVESTER SYSTEM!
+    var minimumNumberOfStaticHarvesters = 2;
+    var minimumNumberOfHaulers = 2;
+    */
 
     // count the number of creeps alive for each role
     // _.sum will count the number of properties in Game.creeps filtered by the
