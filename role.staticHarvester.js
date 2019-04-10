@@ -14,16 +14,20 @@ module.exports = {
         }
     });
 
-    // while not on container
+    // if not on container
     if(targets.length > 0) {
-      // if on container, then harvest
+      // if on container number 0, then harvest
       if(creep.pos.getRangeTo(targets[0]) == 0) {
         var source = creep.pos.findClosestByPath(FIND_SOURCES);
           creep.harvest(source);
       }
-      // go to container to sit on
+      // go to container number 1
       else {
-        creep.moveTo(targets[0]);
+        creep.moveTo(targets[1]);
+        if(creep.pos.getRangeTo(targets[1]) == 0) {
+          var source = creep.pos.findClosestByPath(FIND_SOURCES);
+            creep.harvest(source);
+        }
       }
     }
   }

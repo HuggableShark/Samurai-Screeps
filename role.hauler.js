@@ -10,7 +10,7 @@ module.exports = {
       creep.memory.working = false;
     }
     // if creep is fully stocked
-    else if (creep.memory.working == false && creep.carry.energy == creep.carryCapacity) {
+    else if (creep.memory.working == false && creep.carry.energy > 0) {
       // switch state
       creep.memory.working = true;
     }
@@ -51,5 +51,6 @@ module.exports = {
           creep.moveTo(targetContainer);
         }
       }
+    }
   }
-};
+}
