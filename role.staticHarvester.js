@@ -2,27 +2,33 @@
 //
 // Currently working to integrate into main code
 //
-//
-//
-//
 module.exports = {
-    // a function to run the logic for this role
-    run: function(creep) {
-        // After creep spawns and has no energy
-        if (creep.memory.working == true && creep.carry.energy == 0) {
-            // switch state
-            creep.memory.working = false;
+  // a function to run the logic for this role
+  /** @param {Creep} creep **/
+  run: function(creep) {
+    // find all containers in room  that aren't full
+    var targets = creep.room.find(FIND_STRUCTURES, {
+      filter: (structure) => {
+        return (structure.structureType == STRUCTURE_CONTAINER)
+        && (structure.store[RESOURCE_ENERGY] < structure.storeCapacity);
         }
-        
-        // if creep is supposed to harvest energy from source
-        if (creep.memory.working = false) {
-            // find closest source
-            var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-            // try to harvest energy, if the source is not in range
-            if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                // move towards the source
-                creep.moveTo(source);
-            }
+    });
+
+    // if not on container
+    if(targets.length > 0) {
+      // if on container number 0, then harvest
+      if(creep.pos.getRangeTo(targets[0]) == 0) {
+        var source = creep.pos.findClosestByPath(FIND_SOURCES);
+          creep.harvest(source);
+      }
+      // go to container number 1
+      else {
+        creep.moveTo(targets[1]);
+        if(creep.pos.getRangeTo(targets[1]) == 0) {
+          var source = creep.pos.findClosestByPath(FIND_SOURCES);
+            creep.harvest(source);
         }
+      }
     }
+  }
 };

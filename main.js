@@ -8,6 +8,8 @@ var roleWaller = require('role.waller');
 var roleAmmoMule = require('role.ammoMule');
 var roleLongDistanceHarvester = require('role.longDistanceHarvester');
 var tower = require('role.tower');
+var roleStaticHarvester = require('role.staticHarvester')
+var roleHauler = require('role.hauler');
 
 module.exports.loop = function () {
     // check for memory entries of dead creeps by iterating over Memory.creeps
@@ -26,33 +28,45 @@ module.exports.loop = function () {
 
         // if creep is harvester, call harvester script
         if (creep.memory.role == 'harvester') {
-            roleHarvester.run(creep);
+          roleHarvester.run(creep);
         }
         // if creep is upgrader, call upgrader script
         else if (creep.memory.role == 'upgrader') {
-            roleUpgrader.run(creep);
+          roleUpgrader.run(creep);
         }
         // if creep is builder, call builder script
         else if (creep.memory.role == 'builder') {
-            roleBuilder.run(creep);
+          roleBuilder.run(creep);
         }
         // if creep is repairer, call repairer script
         else if (creep.memory.role == 'repairer') {
-            roleRepairer.run(creep);
+          roleRepairer.run(creep);
         }
         // if creep is wallRepairer, call wallRepairer script
         else if (creep.memory.role == 'waller') {
-            roleWaller.run(creep);
+          roleWaller.run(creep);
         }
         // If ammoMule, do ammoMule things
         if(creep.memory.role == 'ammoMule') {
-            roleAmmoMule.run(creep);
+          roleAmmoMule.run(creep);
         }
         // if creep is longDistanceHarvester, call longDistanceHarvester script
         else if (creep.memory.role == 'longDistanceHarvester') {
-            roleLongDistanceHarvester.run(creep);
+          roleLongDistanceHarvester.run(creep);
         }
+        // CONTAINER HARVESTER CODE
+        //###
+        // if creep is staticHarvester, call staticHarvester script
+        else if (creep.memory.role == 'staticHarvester') {
+          roleStaticHarvester.run(creep);
+        }
+        // if creep is hauler, call hauler script
+        else if (creep.memory.role == 'hauler') {
+          roleHauler.run(creep);
+        }
+        //###
     }
+
     // run tower code
     var myRoomsHash = Game.rooms;
     for(var roomName in myRoomsHash) {
@@ -72,17 +86,6 @@ module.exports.loop = function () {
     var myRoomName = Game.roomName;
     var HOME = 'W7N7';
 
-    // function defendRoom(HOME) {
-    // var hostiles = Game.rooms[HOME].find(FIND_HOSTILE_CREEPS);
-    // if(hostiles.length > 0) {
-    //     var username = hostiles[0].owner.username;
-    //     Game.notify(`User ${username} spotted in room ${roomName}`);
-    //     var towers = Game.rooms[HOME].find(
-    //         FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
-    //     towers.forEach(tower => tower.attack(hostiles[0]));
-    // }
-
-
     // setup some minimum numbers for different roles
     var minimumNumberOfHarvesters = 3;
     var minimumNumberOfUpgraders = 1;
@@ -90,8 +93,14 @@ module.exports.loop = function () {
     var minimumNumberOfRepairers = 2;
     var minimumNumberOfWallers = 1;
     var minimumNumberOfAmmoMules = 2;
-    var minimumNumberOfLongDistanceHarvestersW7N6 = 1;
-    var minimumNumberOfLongDistanceHarvestersW8N7 = 1;
+    var minimumNumberOfLongDistanceHarvestersW7N6 = 2;
+    var minimumNumberOfLongDistanceHarvestersW8N7 = 2;
+
+    // ADD WHEN INTEGRATING CONTAINER HARVESTER SYSTEM!
+    //###
+    var minimumNumberOfStaticHarvesters = 2;
+    var minimumNumberOfHaulers = 1;
+    //###
 
     // count the number of creeps alive for each role
     // _.sum will count the number of properties in Game.creeps filtered by the
@@ -103,67 +112,83 @@ module.exports.loop = function () {
     var numberOfWallers = _.sum(Game.creeps, (c) => c.memory.role == 'waller');
     var numberOfAmmoMules = _.sum(Game.creeps, (c) => c.memory.role == 'ammoMule');
     var numberOfLongDistanceHarvestersW7N6 = _.sum(Game.creeps, (c) =>
-        c.memory.role == 'longDistanceHarvester' && c.memory.target == 'W7N6');
+      c.memory.role == 'longDistanceHarvester' && c.memory.target == 'W7N6');
     var numberOfLongDistanceHarvestersW8N7 = _.sum(Game.creeps, (c) =>
-        c.memory.role == 'longDistanceHarvester' && c.memory.target == 'W8N7');
+      c.memory.role == 'longDistanceHarvester' && c.memory.target == 'W8N7');
     var numberOfTowers = Game.rooms.W7N7.find(
-            FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
+      FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
+    // CONTAINER Harvester
+    //###
+    var numberOfStaticHarvesters = _.sum(Game.creeps, (c) => c.memory.role == 'staticHarvester');
+    var numberOfHaulers = _.sum(Game.creeps, (c) => c.memory.role == 'hauler');
+    //###
 
     var energy = Game.spawns.Spawn1.room.energyCapacityAvailable;
     var name = undefined;
 
     // if not enough harvesters
     if (numberOfHarvesters < minimumNumberOfHarvesters) {
-        // try to spawn one
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'harvester');
+      // try to spawn one
+      name = Game.spawns.Spawn1.createCustomCreep(energy, 'harvester');
 
-        // if spawning failed and we have no harvesters left
-        if (name == ERR_NOT_ENOUGH_ENERGY && numberOfHarvesters == 0) {
-            // spawn one with what is available
-            name = Game.spawns.Spawn1.createCustomCreep(
-                Game.spawns.Spawn1.room.energyAvailable, 'harvester');
-        }
+      // if spawning failed and we have no harvesters left
+      if (name == ERR_NOT_ENOUGH_ENERGY && numberOfHarvesters == 0) {
+        // spawn one with what is available
+        name = Game.spawns.Spawn1.createCustomCreep(
+          Game.spawns.Spawn1.room.energyAvailable, 'harvester');
+      }
     }
+    // CONTAINER HARVESTER CODE
+    //###
+    else if (numberOfStaticHarvesters < minimumNumberOfStaticHarvesters) {
+        // try to spawn one
+        name = Game.spawns.Spawn1.createStaticHarvester(energy, 'staticHarvester');
+    }
+    else if (numberOfHaulers < minimumNumberOfHaulers) {
+        // try to spawn one
+        name = Game.spawns.Spawn1.createHauler(energy, 'hauler');
+    }
+    //###
     // if not enough upgraders
     else if (numberOfUpgraders < minimumNumberOfUpgraders) {
-        // try to spawn one
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'upgrader');
+      // try to spawn one
+      name = Game.spawns.Spawn1.createCustomCreep(energy, 'upgrader');
     }
     // if not enough repairers
     else if (numberOfRepairers < minimumNumberOfRepairers) {
-        // try to spawn one
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'repairer');
+      // try to spawn one
+      name = Game.spawns.Spawn1.createCustomCreep(energy, 'repairer');
     }
     // if not enough builders
     else if (numberOfBuilders < minimumNumberOfBuilders) {
-        // try to spawn one
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'builder');
+      // try to spawn one
+      name = Game.spawns.Spawn1.createCustomCreep(energy, 'builder');
     }
     // if not enough wallers
     else if (numberOfWallers < minimumNumberOfWallers) {
-        // try to spawn one
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'waller');
+      // try to spawn one
+      name = Game.spawns.Spawn1.createCustomCreep(energy, 'waller');
     }
     // if not enough ammoMules
     else if (numberOfAmmoMules < minimumNumberOfAmmoMules) {
-        // try to spawn one
-        name = Game.spawns.Spawn1.createCustomCreep(energy, 'ammoMule');
+      // try to spawn one
+      name = Game.spawns.Spawn1.createCustomCreep(energy, 'ammoMule');
     }
     // if not enough longDistanceHarvesters for W7N4
     else if (numberOfLongDistanceHarvestersW7N6 < minimumNumberOfLongDistanceHarvestersW7N6) {
-        // try to spawn one
-        name = Game.spawns.Spawn1.createLongDistanceHarvester(energy, 3, HOME, 'W7N6', 0, 'longDistanceHarvesterW7N6');
+      // try to spawn one
+      name = Game.spawns.Spawn1.createLongDistanceHarvester(energy, 3, HOME, 'W7N6', 0, 'longDistanceHarvesterW7N6');
     }
     // if not enough longDistanceHarvesters for W6N3
     else if (numberOfLongDistanceHarvestersW8N7 < minimumNumberOfLongDistanceHarvestersW8N7) {
-        // try to spawn one
-        name = Game.spawns.Spawn1.createLongDistanceHarvester(energy, 3, HOME, 'W8N7', 0, 'longDistanceHarvesterW8N7');
+      // try to spawn one
+      name = Game.spawns.Spawn1.createLongDistanceHarvester(energy, 3, HOME, 'W8N7', 0, 'longDistanceHarvesterW8N7');
     }
 
 
     // print name to console if spawning was a success
     // name > 0 would not work since string > 0 returns false
     if (!(name < 0)) {
-        console.log("Spawned new creep: " + name)
+      console.log("Spawned new creep: " + name)
     };
 };

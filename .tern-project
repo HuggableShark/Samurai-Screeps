@@ -2,6 +2,8 @@
   "ecmaVersion": 6,
   "libs": [],
   "loadEagerly": [
-  "ScreepsAutocomplete/**/*.js"
-  ]
+    "ScreepsAutocomplete/**/*.js"
+  ],
+  "plugins": {},
+  "dontLoad": []
 }
