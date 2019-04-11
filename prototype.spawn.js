@@ -3,7 +3,7 @@ module.exports = function() {
     StructureSpawn.prototype.createCustomCreep =
         function(energy, roleName) {
             // create a balanced body as big as possible with the given energy
-            var numberOfParts = Math.floor(energy / 200);
+            var numberOfParts = Math.floor(energy / 400);
             var body = [];
             for (let i = 0; i < numberOfParts; i++) {
                 body.push(WORK);
@@ -70,7 +70,7 @@ module.exports = function() {
     StructureSpawn.prototype.createHauler =
       function(energy, roleName) {
         // create a balanced body as big as possible with the given energy
-        var numberOfParts = Math.floor(energy / 100);
+        var numberOfParts = Math.floor(energy / 200);
         var body = [];
         for (let i = 0; i < numberOfParts; i++) {
           body.push(CARRY);

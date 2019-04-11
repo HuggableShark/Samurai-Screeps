@@ -39,10 +39,44 @@ module.exports = {
     }
     // Otherwise, stock up
     else {
+      // If the creep have a target.
+      if ( creep.memory.targetContainer ) {
+
+        // Go to the container.
+        var theContainer = Game.getObjectById( creep.memory.targetContainer );
+
+        if ( creep.withdraw( theContainer, RESOURCE_ENERGY ) == ERR_NOT_IN_RANGE ) {
+          creep.moveTo( theContainer );
+        }
+      }
+        else {
+          // Find the container with the most energy.
+          var target = creep.room.find( FIND_STRUCTURES, {
+            filter: (structure) => {
+              return (structure.structureType == STRUCTURE_CONTAINER );
+            }
+          });
+
+          if ( target.length ) {
+            var allContainer = [];
+            // Calculate the percentage of energy in each container.
+            for ( var i = 0; i < target.length; i++ ) {
+              allContainer.push( { energyPercent: ( ( target[i].store.energy / target[i].storeCapacity ) * 100 ), id: target[i].id } );
+            }
+
+            // Get the container containing the most energy.
+            var highestContainer = _.max( allContainer, function( container ){ return container.energyPercent; });
+            console.log( 'Going for the container id "' + highestContainer.id + '" at ' + highestContainer.energyPercent + '% full.' );
+            // set the target in memory so the creep dosen't
+            // change target in the middle of the room.
+            creep.memory.targetContainer = highestContainer.id;
+          }
+        }
+      /*
       var containersInRoom = creep.room.find(FIND_STRUCTURES, {
-        filter: (structure) => {
-          return (structure.structureType == STRUCTURE_CONTAINER)
-          && (structure.store[RESOURCE_ENERGY] > 0);
+        filter: (s) => {
+          return (s.structureType == STRUCTURE_CONTAINER)
+              && (s.store[RESOURCE_ENERGY] > 0);
         }
       });
       var targetContainer = creep.pos.findClosestByPath(containersInRoom);
@@ -51,6 +85,7 @@ module.exports = {
           creep.moveTo(targetContainer);
         }
       }
+      */
     }
   }
-}
+};

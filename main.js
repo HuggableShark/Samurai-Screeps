@@ -15,7 +15,7 @@ module.exports.loop = function () {
     // check for memory entries of dead creeps by iterating over Memory.creeps
     for (let name in Memory.creeps) {
         // and checking if the creep is still alive
-        if (Game.creeps[name] == undefined) {
+        if (!Game.creeps[name]) {
             // if not, delete the memory entry
             delete Memory.creeps[name];
         }
@@ -87,19 +87,19 @@ module.exports.loop = function () {
     var HOME = 'W7N7';
 
     // setup some minimum numbers for different roles
-    var minimumNumberOfHarvesters = 3;
+    var minimumNumberOfHarvesters = 1;
     var minimumNumberOfUpgraders = 1;
     var minimumNumberOfBuilders = 1;
     var minimumNumberOfRepairers = 2;
     var minimumNumberOfWallers = 1;
-    var minimumNumberOfAmmoMules = 2;
+    var minimumNumberOfAmmoMules = 1;
     var minimumNumberOfLongDistanceHarvestersW7N6 = 2;
     var minimumNumberOfLongDistanceHarvestersW8N7 = 2;
 
     // ADD WHEN INTEGRATING CONTAINER HARVESTER SYSTEM!
     //###
     var minimumNumberOfStaticHarvesters = 2;
-    var minimumNumberOfHaulers = 1;
+    var minimumNumberOfHaulers = 2;
     //###
 
     // count the number of creeps alive for each role
@@ -127,7 +127,7 @@ module.exports.loop = function () {
     var name = undefined;
 
     // if not enough harvesters
-    if (numberOfHarvesters < minimumNumberOfHarvesters) {
+    if (numberOfHarvesters < minimumNumberOfHarvesters && numberOfStaticHarvesters == 0) {
       // try to spawn one
       name = Game.spawns.Spawn1.createCustomCreep(energy, 'harvester');
 
@@ -143,10 +143,16 @@ module.exports.loop = function () {
     else if (numberOfStaticHarvesters < minimumNumberOfStaticHarvesters) {
         // try to spawn one
         name = Game.spawns.Spawn1.createStaticHarvester(energy, 'staticHarvester');
+        if ( name == ERR_NOT_ENOUGH_ENERGY && numberOfStaticHarvesters < 2) {}
     }
     else if (numberOfHaulers < minimumNumberOfHaulers) {
         // try to spawn one
         name = Game.spawns.Spawn1.createHauler(energy, 'hauler');
+        if (name == ERR_NOT_ENOUGH_ENERGY && numberOfHaulers == 0) {
+          // spawn one with what is available
+          name = Game.spawns.Spawn1.createHauler(
+            Game.spawns.Spawn1.room.energyAvailable, 'hauler');
+        }
     }
     //###
     // if not enough upgraders

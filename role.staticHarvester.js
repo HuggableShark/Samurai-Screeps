@@ -8,10 +8,7 @@ module.exports = {
   run: function(creep) {
     // find all containers in room  that aren't full
     var targets = creep.room.find(FIND_STRUCTURES, {
-      filter: (structure) => {
-        return (structure.structureType == STRUCTURE_CONTAINER)
-        && (structure.store[RESOURCE_ENERGY] < structure.storeCapacity);
-        }
+      filter: (s) => s.structureType == STRUCTURE_CONTAINER
     });
 
     // if not on container
