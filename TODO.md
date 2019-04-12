@@ -1,6 +1,7 @@
 // To-Do list
 !!!
 HIGH PRIORITY!
+FIX STATICHARVESTER ISSUES (harvesters fighting over sources and freezing up)
 Clean up spawn logic for role types vs game state
 !!!
 

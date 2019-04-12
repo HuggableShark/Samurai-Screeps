@@ -55,14 +55,14 @@ module.exports = function() {
             });
         };
 
-    // Static Harvester spawn code: 5x WORK, 1 CARRY, 1 MOVE parts
-    StructureSpawn.prototype.createStaticHarvester =
-      function (energy, roleName) {
+    // Miner spawn code: 5x WORK, 1 CARRY, 1 MOVE parts
+    StructureSpawn.prototype.createMiner =
+      function (sourceId) {
         var body = [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE];
-        var nameFromRole = (roleName + Game.time);
+        var nameFromRole = ('miner' + Game.time);
         return this.createCreep(body, nameFromRole, {
-          role: roleName,
-          working: false
+          role: 'miner',
+          sourceId: sourceId
         });
       }
 

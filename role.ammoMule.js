@@ -52,9 +52,9 @@ module.exports = {
               return (structure.structureType == STRUCTURE_CONTAINER)
               && (structure.store[RESOURCE_ENERGY] > 0);
             }
-          });
+          })
           var targetContainer = creep.pos.findClosestByPath(containersInRoom);
-          if (targetContainer) {
+          if (targetContainer != undefined) {
             if (creep.withdraw(targetContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
               creep.moveTo(targetContainer);
             }
