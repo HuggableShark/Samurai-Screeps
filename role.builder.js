@@ -25,12 +25,15 @@ module.exports = {
 
     // if creep is supposed to work on a construction site
     if (creep.memory.working == true) {
+      // find a construction site
       var constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+      // if we find one, go to it and build
       if(constructionSite != undefined) {
         if(creep.build(constructionSite) == ERR_NOT_IN_RANGE) {
           creep.moveTo(constructionSite);
         }
       }
+      // otherwise, help upgrade
       else {
         roleUpgrader.run(creep);
       }

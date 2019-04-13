@@ -1,5 +1,8 @@
 // Haulers grab energy from nearby sources and transports to spawns/extentions.
+//  Will bring to towers if others are full, and to storage if all else if full.
+//
 // May incorporate more side jobs for them later.
+//#############################################################################
 
 module.exports = {
   // a function to run the logic for this role
@@ -39,22 +42,22 @@ module.exports = {
           creep.moveTo(structure);
         }
       }
+      // if there isn't a structure that needs energy, deliver to storage
       else if (storage != undefined) {
         if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           creep.moveTo(storage);
         }
       }
     }
-    // Otherwise, stock up
+    // Otherwise, pick-up from a container
     else {
-      // If the creep have a target.
+      // If the creep have a target.in memory
       if (creep.memory.targetContainer) {
-        // Go to the container.
+        // Go to the target container.
         var theContainer = Game.getObjectById(creep.memory.targetContainer);
         if (creep.withdraw(theContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           creep.moveTo(theContainer);
         }
-      }
         else {
           // Find the container with the most energy.
           var target = creep.room.find( FIND_STRUCTURES, {
@@ -78,20 +81,7 @@ module.exports = {
             creep.memory.targetContainer = highestContainer.id;
           }
         }
-      /*
-      var containersInRoom = creep.room.find(FIND_STRUCTURES, {
-        filter: (s) => {
-          return (s.structureType == STRUCTURE_CONTAINER)
-              && (s.store[RESOURCE_ENERGY] > 0);
-        }
-      });
-      var targetContainer = creep.pos.findClosestByPath(containersInRoom);
-      if (targetContainer) {
-        if (creep.withdraw(targetContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(targetContainer);
-        }
       }
-      */
     }
   }
 };
