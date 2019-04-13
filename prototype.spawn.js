@@ -2,7 +2,7 @@ module.exports = function() {
     // create a new function for StructureSpawn
     StructureSpawn.prototype.createCustomCreep =
         function(energy, roleName) {
-            // create a balanced body as big as possible with the given energy
+            // create a balanced body as big as possible with half of the total energy
             var numberOfParts = Math.floor(energy / 400);
             var body = [];
             for (let i = 0; i < numberOfParts; i++) {

@@ -95,17 +95,14 @@ module.exports.loop = function () {
       var minimumNumberOfHarvesters = 1;
       var minimumNumberOfUpgraders = 1;
       var minimumNumberOfBuilders = 1;
-      var minimumNumberOfRepairers = 2;
+      var minimumNumberOfRepairers = 1;
       var minimumNumberOfWallers = 1;
       var minimumNumberOfAmmoMules = 1;
       var minimumNumberOfLongDistanceHarvestersW7N6 = 2;
       var minimumNumberOfLongDistanceHarvestersW8N7 = 2;
-
-      // ADD WHEN INTEGRATING CONTAINER HARVESTER SYSTEM!
-      //###
       var minimumNumberOfMiners = 2;
       var minimumNumberOfHaulers = 2;
-      //###
+
 
       // count the number of creeps alive for each role
       // _.sum will count the number of properties in Game.creeps filtered by the
@@ -122,11 +119,9 @@ module.exports.loop = function () {
         c.memory.role == 'longDistanceHarvester' && c.memory.target == 'W8N7');
       var numberOfTowers = Game.rooms.W7N7.find(
         FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
-      // CONTAINER Harvester
-      //###
       var numberOfMiners = _.sum(Game.creeps, (c) => c.memory.role == 'miner');
       var numberOfHaulers = _.sum(Game.creeps, (c) => c.memory.role == 'hauler');
-      //###
+
 
       var energy = Game.spawns.Spawn1.room.energyCapacityAvailable;
       var name = undefined;
@@ -143,8 +138,6 @@ module.exports.loop = function () {
             Game.spawns.Spawn1.room.energyAvailable, 'harvester');
         }
       }
-      // CONTAINER HARVESTER CODE
-      //###
       else if (numberOfMiners < minimumNumberOfMiners) {
         // list sources in room
         let sources = spawn.room.find(FIND_SOURCES);
@@ -174,7 +167,6 @@ module.exports.loop = function () {
               Game.spawns.Spawn1.room.energyAvailable, 'hauler');
           }
       }
-      //###
       // if not enough upgraders
       else if (numberOfUpgraders < minimumNumberOfUpgraders) {
         // try to spawn one

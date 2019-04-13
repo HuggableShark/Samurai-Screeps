@@ -32,7 +32,7 @@ module.exports = {
                 for (let wall of walls) {
                     if (wall.hits / wall.hitsMax < percentage) {
                         target = wall;
-                        break
+                        continue
                     }
                 }
                 for (let rampart of ramparts) {

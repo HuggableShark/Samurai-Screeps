@@ -27,6 +27,9 @@ module.exports = {
                      || s.structureType == STRUCTURE_TOWER)
                      && s.energy < s.energyCapacity
       });
+      var storage = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+        filter: (s) => (s. structureType == STRUCTURE_STORAGE)
+      });
 
       // if we found one
       if (structure != undefined) {
@@ -34,6 +37,11 @@ module.exports = {
         if (creep.transfer(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           // move towards it
           creep.moveTo(structure);
+        }
+      }
+      else if (storage != undefined) {
+        if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(storage);
         }
       }
     }
