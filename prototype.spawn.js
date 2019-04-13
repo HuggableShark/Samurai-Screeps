@@ -2,7 +2,7 @@ module.exports = function() {
     // create a new function for StructureSpawn
     StructureSpawn.prototype.createCustomCreep =
         function(energy, roleName) {
-            // create a balanced body as big as possible with the given energy
+            // create a balanced body as big as possible with half of the total energy
             var numberOfParts = Math.floor(energy / 200);
             var body = [];
             for (let i = 0; i < numberOfParts; i++) {
@@ -55,14 +55,14 @@ module.exports = function() {
             });
         };
 
-    // Static Harvester spawn code: 5x WORK, 1 CARRY, 1 MOVE parts
-    StructureSpawn.prototype.createStaticHarvester =
-      function (energy, roleName) {
+    // Miner spawn code: 5x WORK, 1 CARRY, 1 MOVE parts
+    StructureSpawn.prototype.createMiner =
+      function (sourceId) {
         var body = [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE];
-        var nameFromRole = (roleName + Game.time);
+        var nameFromRole = ('miner' + Game.time);
         return this.createCreep(body, nameFromRole, {
-          role: roleName,
-          working: false
+          role: 'miner',
+          sourceId: sourceId
         });
       }
 
@@ -70,7 +70,7 @@ module.exports = function() {
     StructureSpawn.prototype.createHauler =
       function(energy, roleName) {
         // create a balanced body as big as possible with the given energy
-        var numberOfParts = Math.floor(energy / 100);
+        var numberOfParts = Math.floor(energy / 200);
         var body = [];
         for (let i = 0; i < numberOfParts; i++) {
           body.push(CARRY);
@@ -87,5 +87,14 @@ module.exports = function() {
             role: roleName,
             working: false
             });
-        };
+      };
+
+    // create funtion to spawn a claimer
+    StructureSpawn.prototype.createClaimer =
+      function (target) {
+        return this.createCreep([CLAIM, MOVE], 'claimer', {
+          role: 'claimer',
+          target: target
+        });
+      }
 };

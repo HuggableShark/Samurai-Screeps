@@ -8,15 +8,13 @@ module.exports = {
   run: function(creep) {
     // find all containers in room  that aren't full
     var targets = creep.room.find(FIND_STRUCTURES, {
-      filter: (structure) => {
-        return (structure.structureType == STRUCTURE_CONTAINER)
-        && (structure.store[RESOURCE_ENERGY] < structure.storeCapacity);
-        }
+      filter: (s) => s.structureType == STRUCTURE_CONTAINER
     });
 
     // if not on container
     if(targets.length > 0) {
       // if on container number 0, then harvest
+      creep.moveTo(targets[0]);
       if(creep.pos.getRangeTo(targets[0]) == 0) {
         var source = creep.pos.findClosestByPath(FIND_SOURCES);
           creep.harvest(source);
