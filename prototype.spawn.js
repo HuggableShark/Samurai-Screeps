@@ -3,7 +3,7 @@ module.exports = function() {
     StructureSpawn.prototype.createCustomCreep =
         function(energy, roleName) {
             // create a balanced body as big as possible with half of the total energy
-            var numberOfParts = Math.floor(energy / 400);
+            var numberOfParts = Math.floor(energy / 200);
             var body = [];
             for (let i = 0; i < numberOfParts; i++) {
                 body.push(WORK);
@@ -87,5 +87,14 @@ module.exports = function() {
             role: roleName,
             working: false
             });
-        };
+      };
+
+    // create funtion to spawn a claimer
+    StructureSpawn.prototype.createClaimer =
+      function (target) {
+        return this.createCreep([CLAIM, MOVE], 'claimer', {
+          role: 'claimer',
+          target: target
+        });
+      }
 };
