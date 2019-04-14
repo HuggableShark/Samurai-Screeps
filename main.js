@@ -126,7 +126,7 @@ module.exports.loop = function () {
       name = spawn.createCustomCreep(energy, 'harvester');
 
       // if spawning failed and we have no harvesters left
-      if (name == ERR_NOT_ENOUGH_ENERGY && numberOfMiners == 0) {
+      if (numberOfHarvesters < spawn.memory.minHarvesters && name == ERR_NOT_ENOUGH_ENERGY && numberOfMiners == 0) {
         // spawn one with what is available
         name = spawn.createCustomCreep(
           spawn.room.energyAvailable, 'harvester');
