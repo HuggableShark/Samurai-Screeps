@@ -147,7 +147,7 @@ module.exports.loop = function () {
       // iterate over all sources
       for (let source of sources) {
         // if the source has no miner
-        if (!_.some(creepsInRoom, c => c.memory.role == 'miner' && c.memory.sourceId == source.id)) {
+        if (!_.some(Game.creeps, c => c.memory.role == 'miner' && c.memory.sourceId == source.id)) {
           // check whether or not the source has a container
           let containers = source.pos.findInRange(FIND_STRUCTURES, 1, {
             filter: s => s.structureType == STRUCTURE_CONTAINER

@@ -37,7 +37,7 @@ module.exports = {
       // find closest source
       var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
       // find closest container with some energy in it
-      var container = creep.pos.findClosestByPath(creep.room.find(FIND_MY_STRUCTURES, {
+      var container = creep.pos.findClosestByPath(creep.room.find(FIND_STRUCTURES, {
         filter: (s) => s.structureType == STRUCTURE_CONTAINER
                     && (s.store.energy > 0)
       }));
@@ -49,7 +49,7 @@ module.exports = {
         }
       }
       // try to harvest energy, if the source is not in range
-      else {
+      else if (creep.memory.working == false && container.length == 0) {
         if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
           // move towards the source
           creep.moveTo(source);
