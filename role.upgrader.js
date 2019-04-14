@@ -1,3 +1,5 @@
+// This creep's primary focus is to upgrade the room controller.
+
 module.exports = {
   // a function to run the logic for this role
   run: function(creep) {
@@ -23,21 +25,23 @@ module.exports = {
         creep.moveTo(creep.room.controller);
       }
     }
-    // if creep is supposed to harvest energy from source
+    // if creep is supposed to get energy to User
     else {
       // find closest source
       var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+      // find closest warehouse
       var warehouse = creep.pos.findClosestByPath(creep.room.find(FIND_MY_STRUCTURES, {
         filter: (s) => s.structureType == STRUCTURE_CONTAINER
                     || s.structureType == STRUCTURE_STORAGE
                     && (s.store.energy > 0)
       }));
+      // first: try to grab from a warehouse
       if (creep.memory.working == false) {
         if (creep.withdraw(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(warehouse);
         }
       }
-      // try to harvest energy, if the source is not in range
+      // otherwise, harvest from a source
       else {
         if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
           // move towards the source

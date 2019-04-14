@@ -86,7 +86,7 @@ module.exports = function() {
           return this.createCreep(body, nameFromRole, {
             role: roleName,
             working: false
-            });
+          });
       };
 
     // create funtion to spawn a claimer

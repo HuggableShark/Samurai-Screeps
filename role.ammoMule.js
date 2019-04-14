@@ -27,21 +27,24 @@ module.exports = {
           // move towards it
           creep.moveTo(tower);
         }
-      }
+        // otherwise, help build/upgrade
         else {
           roleBuilder.run(creep);
         }
+      }
     }
-    // if creep is supposed to harvest energy from source or pull from store
     else {
       // find closest source
       var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+      // find closest container with some energy in it
       var container = creep.pos.findClosestByPath(creep.room.find(FIND_MY_STRUCTURES, {
         filter: (s) => s.structureType == STRUCTURE_CONTAINER
                     && (s.store.energy > 0)
       }));
+      // if creep is supposed to get energy to transfer
       if (creep.memory.working == false) {
         if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          // move towards the container
           creep.moveTo(container);
         }
       }

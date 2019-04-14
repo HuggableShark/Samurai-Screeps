@@ -15,62 +15,62 @@ var roleClaimer = require('role.claimer');
 module.exports.loop = function () {
   // check for memory entries of dead creeps by iterating over Memory.creeps
   for (let name in Memory.creeps) {
-      // and checking if the creep is still alive
-      if (!Game.creeps[name]) {
-          // if not, delete the memory entry
-          delete Memory.creeps[name];
-      }
+    // and checking if the creep is still alive
+    if (!Game.creeps[name]) {
+      // if not, delete the memory entry
+      delete Memory.creeps[name];
+    }
   }
 
   // for every creep name in Game.creeps
   for (let name in Game.creeps) {
-      // get the creep object
-      var creep = Game.creeps[name];
+    // get the creep object
+    var creep = Game.creeps[name];
 
-      // if creep is harvester, call harvester script
-      if (creep.memory.role == 'harvester') {
-        roleHarvester.run(creep);
-      }
-      // if creep is upgrader, call upgrader script
-      else if (creep.memory.role == 'upgrader') {
-        roleUpgrader.run(creep);
-      }
-      // if creep is builder, call builder script
-      else if (creep.memory.role == 'builder') {
-        roleBuilder.run(creep);
-      }
-      // if creep is repairer, call repairer script
-      else if (creep.memory.role == 'repairer') {
-        roleRepairer.run(creep);
-      }
-      // if creep is wallRepairer, call wallRepairer script
-      else if (creep.memory.role == 'waller') {
-        roleWaller.run(creep);
-      }
-      // If ammoMule, do ammoMule things
-      if(creep.memory.role == 'ammoMule') {
-        roleAmmoMule.run(creep);
-      }
-      // if creep is longDistanceHarvester, call longDistanceHarvester script
-      if (creep.memory.role == 'longDistanceHarvester') {
-        roleLongDistanceHarvester.run(creep);
-      }
-      // CONTAINER HARVESTER CODE
-      //###
-      // if creep is miner, call miner script
-      if (creep.memory.role == 'miner') {
-        roleMiner.run(creep);
-      }
-      // if creep is hauler, call hauler script
-      if (creep.memory.role == 'hauler') {
-        roleHauler.run(creep);
-      }
-      if (creep.memory.role == 'claimer') {
-        roleClaimer.run(creep)
-      }
+    // if creep is harvester, call harvester script
+    if (creep.memory.role == 'harvester') {
+      roleHarvester.run(creep);
+    }
+    // if creep is upgrader, call upgrader script
+    else if (creep.memory.role == 'upgrader') {
+      roleUpgrader.run(creep);
+    }
+    // if creep is builder, call builder script
+    else if (creep.memory.role == 'builder') {
+      roleBuilder.run(creep);
+    }
+    // if creep is repairer, call repairer script
+    else if (creep.memory.role == 'repairer') {
+      roleRepairer.run(creep);
+    }
+    // if creep is wallRepairer, call wallRepairer script
+    else if (creep.memory.role == 'waller') {
+      roleWaller.run(creep);
+    }
+    // If ammoMule, do ammoMule things
+    if(creep.memory.role == 'ammoMule') {
+      roleAmmoMule.run(creep);
+    }
+    // if creep is longDistanceHarvester, call longDistanceHarvester script
+    if (creep.memory.role == 'longDistanceHarvester') {
+      roleLongDistanceHarvester.run(creep);
+    }
+    // if creep is miner, call miner script
+    if (creep.memory.role == 'miner') {
+      roleMiner.run(creep);
+    }
+    // if creep is hauler, call hauler script
+    if (creep.memory.role == 'hauler') {
+      roleHauler.run(creep);
+    }
+    // if creep is a claimer, run claimer script
+    if (creep.memory.role == 'claimer') {
+      roleClaimer.run(creep)
+    }
   }
 
-  // run tower code
+  // TOWER CODE
+  // for all rooms in game, check for towers I own
   var myRoomsHash = Game.rooms;
   for(var roomName in myRoomsHash) {
     var thisRoom = myRoomsHash[roomName];
@@ -80,9 +80,10 @@ module.exports.loop = function () {
                                        && (structure.energy > 9)
       }
     })
-      for (var towerIterator = 0; towerIterator < roomTowers.length; towerIterator++) {
-        var thisTower = roomTowers[towerIterator];
-        tower.activate(thisTower);
+    // for each tower, activate tower script
+    for (var towerIterator = 0; towerIterator < roomTowers.length; towerIterator++) {
+      var thisTower = roomTowers[towerIterator];
+      tower.activate(thisTower);
     }
   }
 
@@ -91,8 +92,6 @@ module.exports.loop = function () {
   for (let spawnName in Game.spawns) {
     let spawn = Game.spawns[spawnName];
     let creepsInRoom = spawn.room.find(FIND_MY_CREEPS);
-
-    // setup some minimum numbers for different roles
 
 
     // count the number of creeps alive for each role
@@ -113,8 +112,10 @@ module.exports.loop = function () {
     var numberOfMiners = _.sum(creepsInRoom, (c) => c.memory.role == 'miner');
     var numberOfHaulers = _.sum(creepsInRoom, (c) => c.memory.role == 'hauler');
 
-
+    // variable for all energy possible in the room
     var energy = spawn.room.energyCapacityAvailable;
+    // variable for half of the possible energy in room, allows for easier and
+    //    more efficient creep creation
     var halfEnergy = ((spawn.room.energyCapacityAvailable) / 2);
     var name = undefined;
 
@@ -129,18 +130,16 @@ module.exports.loop = function () {
         name = spawn.createCustomCreep(
           spawn.room.energyAvailable, 'harvester');
       }
-      else if (name == ERR_NOT_ENOUGH_ENERGY && numberOfMiners == 0 && energy < 400) {
-        name = spawn.spawnCreep([WORK, CARRY, MOVE, MOVE], 'harvester', {role: 'harvester', working: false})
-      }
-
     }
     // spawn a claimer if a room has been targeted in spawn's memory
     else if (spawn.memory.claimRoom != undefined) {
       name = spawn.createClaimer(spawn.memory.claimRoom);
+      // delete memory entry after spawning
       if (!(name < 0)) {
         delete spawn.memory.claimRoom;
       }
     }
+    // if not enough miners
     else if (numberOfMiners < spawn.memory.minMiners) {
       // list sources in room
       let sources = spawn.room.find(FIND_SOURCES);
@@ -161,14 +160,15 @@ module.exports.loop = function () {
         }
       }
     }
+    // if not enough haulers
     else if (numberOfHaulers < spawn.memory.minHaulers) {
-        // try to spawn one
-        name = spawn.createHauler(energy, 'hauler');
-        if (name == ERR_NOT_ENOUGH_ENERGY && numberOfHaulers == 0) {
-          // spawn one with what is available
-          name = spawn.createHauler(
-            spawn.room.energyAvailable, 'hauler');
-        }
+      // try to spawn one
+      name = spawn.createHauler(energy, 'hauler');
+      if (name == ERR_NOT_ENOUGH_ENERGY && numberOfHaulers == 0) {
+        // spawn one with what is available
+        name = spawn.createHauler(
+          spawn.room.energyAvailable, 'hauler');
+      }
     }
     // if not enough upgraders
     else if (numberOfUpgraders < spawn.memory.minUpgraders) {
@@ -200,11 +200,15 @@ module.exports.loop = function () {
       // try to spawn one
       name = Game.spawns.Spawn1.createLongDistanceHarvester(energy, 3, HOME, 'W7N6', 0, 'longDistanceHarvesterW7N6');
     }
-    // // if not enough longDistanceHarvesters for W8N7
-    // else if (numberOfLongDistanceHarvestersW8N7 < minimumNumberOfLongDistanceHarvestersW8N7) {
-    //   // try to spawn one
-    //   name = Game.spawns.Spawn1.createLongDistanceHarvester(energy, 3, HOME, 'W8N7', 0, 'longDistanceHarvesterW8N7');
-    // }
+    /*
+    // COMMENTED OUT SINCE WE CLAIMED THIS ROOM, UNCOMMENT TO HARVEST FROM AN EXTRA ROOM
+    // if not enough longDistanceHarvesters for W8N7
+    else if (numberOfLongDistanceHarvestersW8N7 < minimumNumberOfLongDistanceHarvestersW8N7) {
+      // try to spawn one
+      name = Game.spawns.Spawn1.createLongDistanceHarvester(energy, 3, HOME, 'W8N7', 0, 'longDistanceHarvesterW8N7');
+    }
+    */
+
     // print name to console if spawning was a success
     // name > 0 would not work since string > 0 returns false
     if (!(name < 0) && name != undefined) {
