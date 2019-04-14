@@ -30,7 +30,7 @@ module.exports = {
                      || s.structureType == STRUCTURE_TOWER)
                      && s.energy < s.energyCapacity
       });
-      var storage = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+      var storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (s) => (s. structureType == STRUCTURE_STORAGE)
       });
 

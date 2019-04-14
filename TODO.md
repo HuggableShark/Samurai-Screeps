@@ -7,6 +7,8 @@ Look into creepsInRoom issue
 Clean up spawn logic for role types vs game state
 !!!
 
+- Create movement code that prioritizes miners getting through packs of creeps
+
 - !!!for ammoMule, if there is a miner by source, don't harvest from source
 - LOOK INTO RENEW FUNCTIONALITY!!!
 - Better "which container do I pick up from" logic (possibly use hauler code)
