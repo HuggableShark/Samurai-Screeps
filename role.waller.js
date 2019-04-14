@@ -81,7 +81,7 @@ module.exports = {
       var weakSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
         filter: (s) => s.energy < s.energyCapacity * 0.25
       });
-      var warehouse = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+      var warehouse = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: (s) => (s.structureType == STRUCTURE_CONTAINER
                     || s.structureType == STRUCTURE_STORAGE)
                     && s.store.energy > 0

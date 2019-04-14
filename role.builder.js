@@ -43,7 +43,7 @@ module.exports = {
     else {
       // find closest source
       var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-      var warehouse = creep.pos.findClosestByPath(creep.room.find(FIND_MY_STRUCTURES, {
+      var warehouse = creep.pos.findClosestByPath(creep.room.find(FIND_STRUCTURES, {
         filter: (s) => s.structureType == STRUCTURE_CONTAINER
                     || s.structureType == STRUCTURE_STORAGE
                     && (s.store.energy > 0)

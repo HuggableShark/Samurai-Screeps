@@ -119,6 +119,7 @@ module.exports.loop = function () {
     var halfEnergy = ((spawn.room.energyCapacityAvailable) / 2);
     var name = undefined;
 
+
     // if not enough harvesters
     if (numberOfHarvesters < spawn.memory.minHarvesters && numberOfMiners == 0) {
       // try to spawn one
