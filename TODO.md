@@ -13,4 +13,3 @@ Clean up spawn logic for role types vs game state
 - Improve tower AI
 - Clean up memory STRUCTURE_STORAGE
 - Combat creeps!
--
