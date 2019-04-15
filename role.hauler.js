@@ -13,7 +13,7 @@ module.exports = {
       creep.memory.working = false;
     }
     // if creep is fully stocked
-    if (! creep.memory.working && creep.carry.energy == creep.carryCapacity) {
+    if (! creep.memory.working && creep.carry.energy > 0) {
       creep.memory.working = true;
       creep.memory.targetContainer = false;
     }
@@ -30,9 +30,7 @@ module.exports = {
                      || s.structureType == STRUCTURE_TOWER)
                      && s.energy < s.energyCapacity
       });
-      var storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: (s) => (s. structureType == STRUCTURE_STORAGE)
-      });
+      var storage = creep.room.storage
 
       // if we found one
       if (structure != undefined) {

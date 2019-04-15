@@ -15,23 +15,25 @@ module.exports = {
     }
 
     // if creep is supposed to transfer energy to a structure
-    else if (creep.memory.working == true) {
+    if (creep.memory.working == true) {
       var tower = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
         filter: (t) => (t.structureType == STRUCTURE_TOWER)
                     && t.energy < t.energyCapacity
       });
       // if we found one
       if (tower != undefined) {
+        creep.say('Bringing ammo')
         // try to transfer energy, if it is not in range
         if (creep.transfer(tower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           // move towards it
           creep.moveTo(tower);
         }
-        // otherwise, help build/upgrade
-        else {
-          roleBuilder.run(creep);
-        }
       }
+      // otherwise, help build/upgrade
+      else {
+        roleBuilder.run(creep);
+      }
+
     }
     else {
       // find closest source

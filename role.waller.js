@@ -69,38 +69,25 @@ module.exports = {
     // if creep is supposed to harvest energy from source
     else {
       // find closest source
-      var closestSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
-        filter: (s) => s.energy > 0
-      });
-
-// #############################################################################
-        // Testing out code to have creep look at storage if source in room
-        // has less than 25% energy left
-// #############################################################################
-
-      var weakSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
-        filter: (s) => s.energy < s.energyCapacity * 0.25
-      });
-      var warehouse = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: (s) => (s.structureType == STRUCTURE_CONTAINER
-                    || s.structureType == STRUCTURE_STORAGE)
-                    && s.store.energy > 0
-      });
-
-      // If the closest source has < 25% energy & there is stored energy
-      if (weakSource != undefined && warehouse != undefined) {
+      var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+      // find closest warehouse
+      var warehouse = creep.pos.findClosestByPath(creep.room.find(FIND_STRUCTURES, {
+        filter: (s) => s.structureType == STRUCTURE_CONTAINER
+                    || s.structureType == STRUCTURE_STORAGE
+                    && (s.store.energy > 0)
+      }));
+      // first: try to grab from a warehouse
+      if (creep.memory.working == false) {
         if (creep.withdraw(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(warehouse);
+            creep.moveTo(warehouse);
         }
       }
-
-
-
-
-      // try to harvest energy, if the source is not in range
-      if (creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
-        // move towards the source
-        creep.moveTo(closestSource);
+      // otherwise, harvest from a source
+      else if (creep.memory.working == false && warehouse.length == 0){
+        if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+          // move towards the source
+          creep.moveTo(source);
+        }
       }
     }
   }

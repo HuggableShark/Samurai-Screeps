@@ -15,7 +15,8 @@ module.exports = {
 */
 
 activate: function(tower) {
-  var myRoomName = 'W7N7'     // Temp code: Replace room name for variable
+
+  var myRoomName = 'W7N7'    // Temp code: Replace room name for variable
   var hostiles = Game.rooms[myRoomName].find(FIND_HOSTILE_CREEPS);
   var towers = Game.rooms[myRoomName].find(FIND_MY_STRUCTURES, {filter:
     {structureType: STRUCTURE_TOWER}});
