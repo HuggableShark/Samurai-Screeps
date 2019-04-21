@@ -1,13 +1,18 @@
 // To-Do list
 !!!
 HIGH PRIORITY!
-Code for detailed count of miners with multiple rooms. There should not be more miners that the total number of sources you control!
+Pull changes from game files into repo files
+
+Apparently broke spawning if containers aren't kept in rooms. Look into how to break out of miner spawn loop if no containers
 Look into creepsInRoom issue
 Clean up spawn logic for role types vs game state
+Fix tower code for multiple rooms
 !!!
 
-- !!!for ammoMule, if there is a miner by source, don't harvest from source
+- Create movement code that prioritizes miners getting through packs of creeps
+
 - LOOK INTO RENEW FUNCTIONALITY!!!
+- Better "which container do I pick up from" logic (possibly use hauler code)
 - Create better spawn rules for harvester parts build
   - Create line for find dropped energy if source is empty
 - Improve tower AI

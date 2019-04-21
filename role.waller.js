@@ -21,30 +21,31 @@ module.exports = {
     // if creep is supposed to repair something
     if (creep.memory.working == true) {
       // find all walls in the room
-      var walls = creep.room.find(FIND_STRUCTURES, {
-        filter: (s) => s.structureType == STRUCTURE_WALL
-      });
-      // find all ramparts in the room
-      var ramparts = creep.room.find(FIND_STRUCTURES, {
+      var borders = creep.room.find(FIND_STRUCTURES, {
         filter: (s) => s.structureType == STRUCTURE_RAMPART
+                    || s.structureType == STRUCTURE_WALL
       });
+      // // find all ramparts in the room
+      // var ramparts = creep.room.find(FIND_STRUCTURES, {
+      //   filter: (s) => s.structureType == STRUCTURE_RAMPART
+      // });
 
       var target = undefined;
 
       // loop with increasing percentages
-      for (let percentage = 0.00001; percentage <= 1; percentage = percentage + 0.00001){
-        for (let wall of walls) {
-          if (wall.hits / wall.hitsMax < percentage) {
-            target = wall;
-            continue
-          }
-        }
-        for (let rampart of ramparts) {
-          if (rampart.hits / rampart.hitsMax < percentage) {
-            target = rampart;
+      for (let percentage = 0.0001; percentage <= 1; percentage = percentage + 0.0001){
+        for (let border of borders) {
+          if (border.hits / border.hitsMax < percentage) {
+            target = border;
             break
           }
         }
+        // for (let rampart of ramparts) {
+        //   if (rampart.hits / rampart.hitsMax < percentage) {
+        //     target = rampart;
+        //     break
+        //   }
+        // }
         // if there is one
         if (target != undefined) {
           // break the loop
@@ -60,7 +61,7 @@ module.exports = {
           creep.moveTo(target);
         }
       }
-      // if we can't fine one
+      // if we can't find one
       else {
         // look for construction sites
         roleBuilder.run(creep);
@@ -69,38 +70,25 @@ module.exports = {
     // if creep is supposed to harvest energy from source
     else {
       // find closest source
-      var closestSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
-        filter: (s) => s.energy > 0
-      });
-
-// #############################################################################
-        // Testing out code to have creep look at storage if source in room
-        // has less than 25% energy left
-// #############################################################################
-
-      var weakSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
-        filter: (s) => s.energy < s.energyCapacity * 0.25
-      });
-      var warehouse = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-        filter: (s) => (s.structureType == STRUCTURE_CONTAINER
-                    || s.structureType == STRUCTURE_STORAGE)
-                    && s.store.energy > 0
-      });
-
-      // If the closest source has < 25% energy & there is stored energy
-      if (weakSource != undefined && warehouse != undefined) {
+      var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+      // find closest warehouse
+      var warehouse = creep.pos.findClosestByPath(creep.room.find(FIND_STRUCTURES, {
+        filter: (s) => s.structureType == STRUCTURE_CONTAINER
+                    || s.structureType == STRUCTURE_STORAGE
+                    && (s.store.energy > 0)
+      }));
+      // first: try to grab from a warehouse
+      if (creep.memory.working == false) {
         if (creep.withdraw(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(warehouse);
+            creep.moveTo(warehouse);
         }
       }
-
-
-
-
-      // try to harvest energy, if the source is not in range
-      if (creep.harvest(closestSource) == ERR_NOT_IN_RANGE) {
-        // move towards the source
-        creep.moveTo(closestSource);
+      // otherwise, harvest from a source
+      else if (creep.memory.working == false && warehouse.length == 0){
+        if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+          // move towards the source
+          creep.moveTo(source);
+        }
       }
     }
   }
