@@ -21,30 +21,31 @@ module.exports = {
     // if creep is supposed to repair something
     if (creep.memory.working == true) {
       // find all walls in the room
-      var walls = creep.room.find(FIND_STRUCTURES, {
-        filter: (s) => s.structureType == STRUCTURE_WALL
-      });
-      // find all ramparts in the room
-      var ramparts = creep.room.find(FIND_STRUCTURES, {
+      var borders = creep.room.find(FIND_STRUCTURES, {
         filter: (s) => s.structureType == STRUCTURE_RAMPART
+                    || s.structureType == STRUCTURE_WALL
       });
+      // // find all ramparts in the room
+      // var ramparts = creep.room.find(FIND_STRUCTURES, {
+      //   filter: (s) => s.structureType == STRUCTURE_RAMPART
+      // });
 
       var target = undefined;
 
       // loop with increasing percentages
-      for (let percentage = 0.00001; percentage <= 1; percentage = percentage + 0.00001){
-        for (let wall of walls) {
-          if (wall.hits / wall.hitsMax < percentage) {
-            target = wall;
-            continue
-          }
-        }
-        for (let rampart of ramparts) {
-          if (rampart.hits / rampart.hitsMax < percentage) {
-            target = rampart;
+      for (let percentage = 0.0001; percentage <= 1; percentage = percentage + 0.0001){
+        for (let border of borders) {
+          if (border.hits / border.hitsMax < percentage) {
+            target = border;
             break
           }
         }
+        // for (let rampart of ramparts) {
+        //   if (rampart.hits / rampart.hitsMax < percentage) {
+        //     target = rampart;
+        //     break
+        //   }
+        // }
         // if there is one
         if (target != undefined) {
           // break the loop
@@ -60,7 +61,7 @@ module.exports = {
           creep.moveTo(target);
         }
       }
-      // if we can't fine one
+      // if we can't find one
       else {
         // look for construction sites
         roleBuilder.run(creep);
