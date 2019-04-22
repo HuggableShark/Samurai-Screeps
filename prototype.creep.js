@@ -8,7 +8,6 @@ var roles = {
     claimer: require('role.claimer'),
     miner: require('role.miner'),
     hauler: require('role.hauler'),
-    ammoMule: require('role.ammoMule')
 };
 
 Creep.prototype.runRole =
