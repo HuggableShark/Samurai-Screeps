@@ -1,4 +1,4 @@
-var listOfRoles = ['harvester', 'hauler', 'upgrader', 'repairer', 'builder', 'waller', 'ammoMule'];
+var listOfRoles = ['harvester', 'claimer', 'hauler', 'upgrader', 'repairer', 'builder', 'waller'];
 
 
 // create a new function for StructureSpawn
@@ -22,12 +22,22 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
         let halfEnergy = room.energyCapacityAvailable / 2
         let name = undefined;
 
+        // if there is a miner and a hauler, don't spawn harvesters
+        if (numberOfCreeps['miner'] > 0 && numberOfCreeps['hauler'] > 0) {
+          this.memory.minCreeps.harvester = 0;
+        }
+        // if there are no miner and haulers, spawn harvesters when necessary
+        else if(numberOfCreeps['miner'] == 0 && numberOfCreeps['hauler'] == 0){
+          this.memory.minCreeps.harvester = 2;
+        }
+
+
         // if no harvesters are left AND either no miners or no haulers are left
         //  create a backup creep
         if (numberOfCreeps['harvester'] == 0 && numberOfCreeps['hauler'] == 0) {
             // if there are still miners or enough energy in Storage left
             if (numberOfCreeps['miner'] > 0 ||
-                (room.storage != undefined && room.storage.store[RESOURCE_ENERGY] >= 150 + 550)) {
+                (room.storage != undefined && room.storage.store[RESOURCE_ENERGY] >= 150)) {
                 // create a hauler
                 name = this.createHauler(150);
             }
@@ -72,16 +82,17 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
                         // delete the claim order
                         delete this.memory.claimRoom;
                     }
+                    break;
                 }
                 // if no claim order was found, check other roles
                 else if (numberOfCreeps[role] < this.memory.minCreeps[role]) {
                     if (role == 'hauler') {
                         name = this.createHauler(halfEnergy);
                     }
-                    else if (role != 'harvester'){
-                        name = this.createCustomCreep(maxEnergy, role);
+                    else {
+                      name = this.createCustomCreep(maxEnergy, role);
+                        break;
                     }
-                    continue;
                 }
             }
         }
@@ -118,8 +129,8 @@ StructureSpawn.prototype.createCustomCreep =
     function (energy, roleName) {
         // create a balanced body as big as possible with the given energy
         var numberOfParts = Math.floor(energy / 200);
-        // make sure the creep is not too big (more than 50 parts)
-        numberOfParts = Math.min(numberOfParts, Math.floor(50 / 3));
+        // make sure the creep is not too big (no more than 15 parts for efficiency)
+        numberOfParts = Math.min(numberOfParts, Math.floor(15 / 3));
         var body = [];
         for (let i = 0; i < numberOfParts; i++) {
             body.push(WORK);
@@ -175,7 +186,7 @@ StructureSpawn.prototype.createLongDistanceHarvester =
 StructureSpawn.prototype.createClaimer =
     function (target) {
       // Name creep by their role + the current game time at spawn
-      var nameFromRole = (roleName + Game.time);
+      var nameFromRole = ('claimer' + Game.time);
       return this.createCreep([CLAIM, MOVE], nameFromRole, { role: 'claimer', target: target });
     };
 

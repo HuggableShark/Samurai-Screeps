@@ -1,12 +1,8 @@
 // To-Do list
 !!!
 HIGH PRIORITY!
-Pull changes from game files into repo files
-
-Apparently broke spawning if containers aren't kept in rooms. Look into how to break out of miner spawn loop if no containers
-Look into creepsInRoom issue
+Create a queue list that for spawn memory to spawn creeps from instead of loop.
 Clean up spawn logic for role types vs game state
-Fix tower code for multiple rooms
 !!!
 
 - Create movement code that prioritizes miners getting through packs of creeps

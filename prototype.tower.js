@@ -21,12 +21,12 @@ StructureTower.prototype.repair =
         // get the creep object
         var creep = Game.creeps[name];
         if (creep.hits < creep.hitsMax) {
-          towers.forEach(tower => tower.heal(creep));
+          this.heal(creep);
           console.log("Tower is healing Creeps.");
         }
       }
     }
-    else if (towers.energy > ((towers.energyCapacity / 10)* 5)){
+    else if (this.energy > ((this.energyCapacity / 10)* 5)){
       //Find the closest damaged Structure
       var closestDamagedStructure = towers.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: (s) => s.hits < s.hitsMax && s.structureType
@@ -35,7 +35,7 @@ StructureTower.prototype.repair =
                     != STRUCTURE_RAMPART
       });
   	  if(closestDamagedStructure) {
-	     towers.repair(closestDamagedStructure);
+	     this.repair(closestDamagedStructure);
 	 	   console.log("The tower is repairing buildings.");
       }
     }
