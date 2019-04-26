@@ -3,6 +3,7 @@ require('prototype.creep');
 require('prototype.tower');
 require('prototype.spawn');
 
+
 module.exports.loop = function() {
   // check for memory entries of died creeps by iterating over Memory.creeps
   for (let name in Memory.creeps) {
@@ -25,7 +26,6 @@ module.exports.loop = function() {
   for (let tower of towers) {
     // run tower logic
     tower.defend();
-    tower.repair();
   }
 
   // for each spawn
