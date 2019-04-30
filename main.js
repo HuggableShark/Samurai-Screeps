@@ -30,6 +30,7 @@ module.exports.loop = function() {
 
   // for each spawn
   for (let spawnName in Game.spawns) {
+    Game.spawns[spawnName].reuse(spawnName);
     // check that spawn has a minCreeps object
     if (Game.spawns[spawnName].memory.minCreeps == undefined) {
       // if not, give it one

@@ -27,12 +27,11 @@ StructureTower.prototype.defend =
     }
     */
 
-    else if(target == undefined && this.energy > (this.energyCapacity * 0.5)) {
+    else if (target == undefined && this.energy > (this.energyCapacity * 0.5)) {
       var rampartsToFix = this.room.find(FIND_MY_STRUCTURES, {
-        filter: (s) => s.hits < 10000 && s.structureType
+        filter: (s) => s.hits < 50000 && s.structureType
                     == STRUCTURE_RAMPART
       });
       this.repair(rampartsToFix[0]);
-
     }
 };

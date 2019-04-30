@@ -33,7 +33,7 @@ module.exports = {
       var target = undefined;
 
       // loop with increasing percentages
-      for (let percentage = 0.0001; percentage <= 1; percentage = percentage + 0.0001){
+      for (let percentage = 0.001; percentage <= 1; percentage = percentage + 0.001){
         for (let border of borders) {
           if (border.hits / border.hitsMax < percentage) {
             target = border;

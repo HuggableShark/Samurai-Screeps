@@ -1,6 +1,9 @@
 // To-Do list
 !!!
 HIGH PRIORITY!
+
+Look into corpse collector that picks up recycled creeps and dropped energy/minerals
+
 Create a queue list that for spawn memory to spawn creeps from instead of loop.
 Clean up spawn logic for role types vs game state
 !!!

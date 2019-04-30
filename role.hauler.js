@@ -17,6 +17,13 @@ module.exports = {
       creep.memory.working = true;
       creep.memory.targetContainer = false;
     }
+    if (creep.ticksToLive < 200) {
+      creep.memory.recycle = true
+      var closestSpawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: (s) => (s.structureType == STRUCTURE_SPAWN)
+      });
+      creep.moveTo(closestSpawn);
+    }
 
     // if creep is supposed to transfer energy to a structure
     if (creep.memory.working == true) {
