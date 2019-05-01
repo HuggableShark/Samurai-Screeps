@@ -126,8 +126,8 @@ StructureSpawn.prototype.createCustomCreep =
   function (energy, roleName) {
     // create a balanced body as big as possible with the given energy
     var numberOfParts = Math.floor(energy / 200);
-    // make sure the creep is not too big (no more than 15 parts for efficiency)
-    numberOfParts = Math.min(numberOfParts, Math.floor(15 / 3));
+    // make sure the creep is not too big (no more than 30 parts for efficiency)
+    numberOfParts = Math.min(numberOfParts, Math.floor(30 / 3));
     var body = [];
     for (let i = 0; i < numberOfParts; i++) {
       body.push(WORK);
@@ -184,7 +184,7 @@ StructureSpawn.prototype.createClaimer =
   function (target) {
     // Name creep by their role + the current game time at spawn
     var nameFromRole = ('claimer' + Game.time);
-    return this.createCreep([CLAIM, MOVE], nameFromRole, { role: 'claimer', target: target });
+    return this.createCreep([CLAIM, MOVE, WORK, CARRY], nameFromRole, { role: 'claimer', target: target, working: false });
   };
 
 // create a new function for StructureSpawn
@@ -213,7 +213,7 @@ StructureSpawn.prototype.createHauler =
         // Name creep by their role + the current game time at spawn
         var nameFromRole = ('hauler' + Game.time);
 
-        // create creep with the created body and the role 'lorry'
+        // create creep with the created body and the role 'hauler'
         return this.createCreep(body, nameFromRole, { role: 'hauler', working: false });
   };
 

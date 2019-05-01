@@ -1,3 +1,4 @@
+var roleBuilder = require('role.builder');
 
 module.exports = {
   // a function to run the logic for this role
@@ -13,7 +14,10 @@ module.exports = {
       // try to claim controller
       if (creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE) {
         // move to controller
-        creep.moveTo(creep.room.controller)
+        creep.moveTo(creep.room.controller);
+      }
+      else {
+        roleBuilder.run(creep);
       }
     }
   }
