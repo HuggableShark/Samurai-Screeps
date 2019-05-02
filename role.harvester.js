@@ -8,6 +8,7 @@
 //  build/upgrade.
 
 // import builder and upgrader scripts for when harvesting work is done.
+require('prototype.combat');
 var roleBuilder = require('role.builder');
 
 module.exports = {

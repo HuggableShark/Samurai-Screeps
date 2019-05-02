@@ -9,6 +9,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
     // find all creeps in room
     /** @type {Array.<Creep>} */
     let creepsInRoom = room.find(FIND_MY_CREEPS);
+    let hostile = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
 
     /** @type {Object.<string, number>} */
     let numberOfCreeps = {};
@@ -45,7 +46,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
       }
     }
     // if no backup creep is required
-    else {
+    else if (maxEnergy >= 550) {
       // check if all sources have miners
       let sources = room.find(FIND_SOURCES);
       // iterate over all sources
@@ -64,6 +65,19 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
             break;
           }
         }
+      }
+    }
+
+    // spawn roomGuards if there is a hostile in room
+    if (hostile != undefined) {
+      var numberOfDefenders = _.sum(creepsInRoom, (c) => c.memory.role == 'roomGuard');
+      var preferredNumAttackParts = 5
+      var beefyBoy = (130 * preferredNumAttackParts)
+      if (numberOfDefenders < 1) {
+        name = this.spawnRoomGuard(room.energyAvailable);
+      }
+      else if (numberOfDefenders < 4) {
+        name = this.spawnRoomGuard(beefyBoy)
       }
     }
 
@@ -230,3 +244,44 @@ StructureSpawn.prototype.reuse =
       }
     }
   };
+
+// roomGuard Spawn code
+StructureSpawn.prototype.spawnRoomGuard =
+  function (energy) {
+    var numberOfParts = Math.floor(energy / 130);
+    numberOfParts = Math.min(numberOfParts, Math.floor(50 / 2));
+    var body = [];
+    for (let i = 0; i < numberOfParts; i++) {
+        body.push(ATTACK);
+    }
+    for (let i = 0; i < numberOfParts; i++) {
+        body.push(MOVE);
+    }
+    // Name creep by their role + the current game time at spawn
+    var nameFromRole = ('roomGuard' + Game.time);
+
+    // create creep with the created body and the role 'hauler'
+    return this.spawnCreep(body, nameFromRole, { memory: { role: 'roomGuard' } });
+  };
+
+  // roomGuard + heals spawnCode
+  StructureSpawn.prototype.spawnEliteRoomGuard =
+    function (energy) {
+      var numberOfParts = Math.floor(energy / 280);
+      numberOfParts = Math.min(numberOfParts, Math.floor(50 / 2));
+      var body = [];
+      for (let i = 0; i < numberOfParts; i++) {
+          body.push(ATTACK);
+      }
+      for (let i = 0; i < numberOfParts * 2; i++) {
+          body.push(MOVE);
+      }
+      for (let i = 0; i < numberOfParts; i++) {
+          body.push(HEAL);
+      }
+      // Name creep by their role + the current game time at spawn
+      var nameFromRole = ('eliteRoomGuard' + Game.time);
+
+      // create creep with the created body and the role 'hauler'
+      return this.spawnCreep(body, nameFromRole, { memory: { role: 'eliteRoomGuard' } });
+    };

@@ -8,7 +8,8 @@ var roles = {
     claimer: require('role.claimer'),
     miner: require('role.miner'),
     hauler: require('role.hauler'),
-    extractor: require('role.extractor')
+    extractor: require('role.extractor'),
+    roomGuard: require('role.roomGuard')
 };
 
 Creep.prototype.runRole =
