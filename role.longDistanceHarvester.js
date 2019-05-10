@@ -17,6 +17,27 @@ module.exports = {
       creep.memory.working = true;
     }
 
+    if (creep.ticksToLive < 200) {
+      creep.memory.recycle = true
+      creep.say('reuse me!');
+      var closestSpawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: (s) => (s.structureType == STRUCTURE_SPAWN)
+      });
+      if (creep.memory.recycle = true) {
+        if (creep.room.name == creep.memory.home) {
+          if (creep.pos.getRangeTo(closestSpawn) > 1) {
+            creep.moveTo(closestSpawn);
+          }
+        }
+        else {
+          // find exit to home room
+          var exit = creep.room.findExitTo(creep.memory.home);
+          // and move to exit
+          creep.moveTo(creep.pos.findClosestByRange(exit));
+        }
+      }
+    }
+
     // if creep is supposed to transfer energy to a structure
     if (creep.memory.working == true) {
       // if in home room
