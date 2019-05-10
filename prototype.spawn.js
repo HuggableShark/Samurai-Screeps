@@ -9,7 +9,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
     // find all creeps in room
     /** @type {Array.<Creep>} */
     let creepsInRoom = room.find(FIND_MY_CREEPS);
-    let hostile = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
+    let hostile = this.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
 
     /** @type {Object.<string, number>} */
     let numberOfCreeps = {};
@@ -37,7 +37,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
       if (numberOfCreeps['miner'] > 0 ||
         (room.storage != undefined && room.storage.store[RESOURCE_ENERGY] >= 150)) {
         // create a hauler
-        name = this.createHauler(150);
+        name = this.createHauler(room.energyAvailable);
       }
       // if there is no miner and not enough energy in Storage left
       else {
@@ -61,7 +61,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
           // if there is a container next to the source
           if (containers.length > 0) {
             // spawn a miner
-            name = this.createMiner(source.id);
+            name = this.createMiner(source.id, room.energyAvailable);
             break;
           }
         }
@@ -116,9 +116,9 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
       for (let roomName in this.memory.minLongDistanceHarvesters) {
         numberOfLongDistanceHarvesters[roomName] = _.sum(Game.creeps, (c) =>
           c.memory.role == 'longDistanceHarvester' && c.memory.target == roomName)
-
+        var numberOfWorkForLDH = room.controller.level;
         if (numberOfLongDistanceHarvesters[roomName] < this.memory.minLongDistanceHarvesters[roomName]) {
-          name = this.createLongDistanceHarvester(maxEnergy, 2, room.name, roomName, 0);
+          name = this.createLongDistanceHarvester(maxEnergy, numberOfWorkForLDH, room.name, roomName, 0);
         }
       }
     }
@@ -203,10 +203,20 @@ StructureSpawn.prototype.createClaimer =
 
 // create a new function for StructureSpawn
 StructureSpawn.prototype.createMiner =
-  function (sourceId) {
+  function (sourceId, energy) {
+    var numberOfParts = Math.floor(energy / 550);
+    // make sure the creep is not too big (no more than 30 parts for efficiency)
+    numberOfParts = Math.min(numberOfParts, Math.floor(12 / 6));
+    var body = [];
+    for (let i = 0; i < numberOfParts; i++) {
+        body.push(MOVE);
+    }
+    for (let i = 0; i < numberOfParts * 5; i++) {
+        body.push(WORK);
+    }
     // Name creep by their role + the current game time at spawn
     var nameFromRole = ('miner' + Game.time);
-    return this.createCreep([WORK, WORK, WORK, WORK, WORK, MOVE], nameFromRole,
+    return this.createCreep(body, nameFromRole,
                               { role: 'miner', sourceId: sourceId });
   };
 

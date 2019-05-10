@@ -1,19 +1,13 @@
 // To-Do list
 !!!
 HIGH PRIORITY!
-
-Look into corpse collector that picks up recycled creeps and dropped energy/minerals
-
-Create a queue list that for spawn memory to spawn creeps from instead of loop.
+Change the creep.memory.working to something that has more options than true/false
+Early game module for RCL 4 and below
 Clean up spawn logic for role types vs game state
 !!!
 
+- Create a queue list that for spawn memory to spawn creeps from instead of loop.
 - Create movement code that prioritizes miners getting through packs of creeps
-
+- work on hauler tombstone cleanup code for minerals
 - LOOK INTO RENEW FUNCTIONALITY!!!
-- Better "which container do I pick up from" logic (possibly use hauler code)
-- Create better spawn rules for harvester parts build
-  - Create line for find dropped energy if source is empty
-- Improve tower AI
-- Clean up memory STRUCTURE_STORAGE
-- Combat creeps!
+- Combat squad

@@ -1,26 +1,28 @@
 module.exports = {
   // a function to run the logic for this role
   run: function(creep) {
-    // combat test
+
+    var roomToStrike = creep.memory.roomToStrike;
     var hostile = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS)
 
+    // if hostile is defined, attack
     if (hostile != undefined) {
       if (creep.attack(hostile) == ERR_NOT_IN_RANGE) {
         creep.moveTo(hostile);
       }
     }
-    // end combat test
 
+    // if no hostile, go get recycled
     if (hostile == undefined) {
       creep.memory.recycle = true
-      var closestSpawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      creep.moveTo(creep.pos.findClosestByPath((FIND_STRUCTURES, {
         filter: (s) => (s.structureType == STRUCTURE_SPAWN)
-      });
-      if (creep.memory.recycle = true) {
-        if (creep.pos.getRangeTo(closestSpawn) > 1) {
-        creep.moveTo(closestSpawn);
-        }
-      }
+      })));
     }
+
+    // find exit to target room
+    var exit = creep.room.findExitTo(creep.memory.target);
+    // move to exit
+    creep.moveTo(creep.pos.findClosestByRange(exit));
   }
 };

@@ -14,12 +14,14 @@ module.exports.loop = function() {
     }
   }
 
+  // Run all generic creep logic
   // for each creeps
   for (let name in Game.creeps) {
     // run creep logic
     Game.creeps[name].runRole();
   }
 
+  // Run all generic tower logic
   // find all towers
   var towers = _.filter(Game.structures, s => s.structureType == STRUCTURE_TOWER);
   // for each tower
@@ -28,13 +30,15 @@ module.exports.loop = function() {
     tower.defend();
   }
 
+  // Run all generic spawn logic
   // for each spawn
   for (let spawnName in Game.spawns) {
     Game.spawns[spawnName].reuse(spawnName);
     // check that spawn has a minCreeps object
     if (Game.spawns[spawnName].memory.minCreeps == undefined) {
       // if not, give it one
-      Game.spawns[spawnName].memory.minCreeps = {};
+      Game.spawns[spawnName].memory.minCreeps = {
+        harvester: 3, upgrader: 1, builder: 0, repairer: 1, miner: 2, hauler: 1, waller: 1};
     }
     // run spawn logic
     Game.spawns[spawnName].spawnCreepsIfNecessary();
