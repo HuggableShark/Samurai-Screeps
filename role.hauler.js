@@ -1,5 +1,7 @@
 // Haulers grab energy from nearby sources and transports to spawns/extentions.
 //  Will bring to towers if others are full, and to storage if all else if full.
+//  Will also act as cleanup crew on tombstones and will stock terminals.
+//
 //
 // May incorporate more side jobs for them later.
 //#############################################################################
@@ -13,7 +15,7 @@ module.exports = {
       creep.memory.working = false;
     }
     // if creep is fully stocked
-    if (! creep.memory.working && creep.carry.energy > 0 || creep.store) {
+    if (! creep.memory.working && creep.carry.energy >= 50 || creep.store) {
       creep.memory.working = true;
       creep.memory.targetContainer = false;
     }
@@ -45,6 +47,7 @@ module.exports = {
                      && s.energy < s.energyCapacity
       });
       var storage = creep.room.storage
+      var terminal = creep.room.terminal
 
       // if we found one
       if (structure != undefined) {
@@ -54,16 +57,27 @@ module.exports = {
           creep.moveTo(structure);
         }
       }
+
+      // uncomment following to not stock terminals
+      else if (terminal != undefined && terminal.store[RESOURCE_ENERGY] < 2000) {
+        if (creep.transfer(terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(terminal);
+        }
+      }
+
       // if there isn't a structure that needs energy, deliver to storage
-      else if (storage != undefined) {
+      else if (storage != undefined && storage.store[RESOURCE_ENERGY] < storage.storeCapacity ) {
         if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           creep.moveTo(storage);
         }
       }
-      /* // CODE TO DROP OFF MINERALS IN STORAGE!!!
-      else if (storage != undefined && creep.carry{} > 0) {
-        if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(storage);
+      /*
+      var terminal = creep.room.terminal
+      var creepWithMinerals = creep.carry
+      // CODE TO DROP OFF MINERALS IN TERMINAL!!!
+      if (terminal != undefined && creep.carry.energy == 0) {
+        if (creep.transfer(terminal, _.findKey(creep.carry)) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(terminal);
         }
       }
       */
@@ -101,6 +115,9 @@ module.exports = {
         var theContainer = Game.getObjectById(creep.memory.targetContainer);
         if (creep.withdraw(theContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           creep.moveTo(theContainer);
+        }
+        else if (creep.withdraw(theContainer, RESOURCE_ENERGY) == ERR_NOT_ENOUGH_RESOURCES) {
+          creep.memory.targetContainer = undefined;
         }
       }
       else {

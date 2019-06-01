@@ -7,7 +7,16 @@ module.exports = {
        if (!creep.memory.extracting && 0 == _.sum(creep.carry)) {
            creep.memory.extracting = true;
            if (creep.ticksToLive < 200) {
-               creep.suicide();
+             creep.memory.recycle = true
+             creep.say('reuse me!');
+             var closestSpawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+               filter: (s) => (s.structureType == STRUCTURE_SPAWN)
+             });
+             if (creep.memory.recycle = true) {
+               if (creep.pos.getRangeTo(closestSpawn) > 1) {
+               creep.moveTo(closestSpawn);
+               }
+             }
            }
        }
 
@@ -25,12 +34,14 @@ module.exports = {
            if (creep.harvest(target) == ERR_NOT_IN_RANGE) {
                creep.moveTo(target);
            }
-       } else {
+       }
+       else {
            if (creep.room.terminal) {
                if (creep.transfer(creep.room.terminal, creep.memory.mineralType) == ERR_NOT_IN_RANGE) {
                    creep.moveTo(creep.room.terminal);
                }
-           } else if (creep.room.storage) {
+           }
+           else if (creep.room.storage) {
                if (creep.transfer(creep.room.storage, creep.memory.mineralType) == ERR_NOT_IN_RANGE) {
                    creep.moveTo(creep.room.storage);
                }

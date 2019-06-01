@@ -18,6 +18,7 @@ module.exports = {
     }
 
     if (creep.ticksToLive < 200) {
+      creep.memory.working = true
       creep.memory.recycle = true
       creep.say('reuse me!');
       var closestSpawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {

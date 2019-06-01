@@ -35,7 +35,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
     if (numberOfCreeps['harvester'] == 0 && numberOfCreeps['hauler'] == 0) {
       // if there are still miners or enough energy in Storage left
       if (numberOfCreeps['miner'] > 0 ||
-        (room.storage != undefined && room.storage.store[RESOURCE_ENERGY] >= 150)) {
+        (room.storage != undefined && room.energyAvailable >= 150)) {
         // create a hauler
         name = this.createHauler(room.energyAvailable);
       }
@@ -65,6 +65,17 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
             break;
           }
         }
+      }
+    }
+
+    // spawn extractor creep if there is an extractor and terminal
+    var extractor = this.room.find(FIND_STRUCTURES, {
+      filter: e => e.structureType == STRUCTURE_EXTRACTOR
+    });
+    var numberOfMineralMiners =  _.sum(creepsInRoom, (c) => c.memory.role == 'mineralMiner');
+    if ((extractor != undefined) && (this.room.terminal != undefined)) {
+      if (numberOfMineralMiners < 1) {
+        name = this.spawnMineralMiner(400);
       }
     }
 
@@ -241,9 +252,21 @@ StructureSpawn.prototype.createHauler =
         return this.createCreep(body, nameFromRole, { role: 'hauler', working: false });
   };
 
+// create a function to spawn extractors
+StructureSpawn.prototype.spawnMineralMiner =
+  function (energy) {
+    var body = [WORK, WORK, CARRY, MOVE, MOVE, MOVE];
+    // Name creep by their role + the current game time at spawn
+    var nameFromRole = ('mineralMiner' + Game.time);
+
+    // create creep with the created body and the role 'hauler'
+    return this.spawnCreep(body, nameFromRole, {memory: {role: 'mineralMiner', extracting: false}});
+};
+
+
 // create a new function to recycle creeps if they have said memory status
 StructureSpawn.prototype.reuse =
-  function (spawnName) {
+  function () {
     let room = this.room;
     let creepsInRoom = room.find(FIND_MY_CREEPS);
     for (creep of creepsInRoom) {
@@ -294,4 +317,40 @@ StructureSpawn.prototype.spawnRoomGuard =
 
       // create creep with the created body and the role 'hauler'
       return this.spawnCreep(body, nameFromRole, { memory: { role: 'eliteRoomGuard' } });
+    };
+
+  StructureSpawn.prototype.buildExtractor =
+    function () {
+      var roomControlLevel = this.room.controller.level;
+      if (roomControlLevel >= 6) {
+        var extractorInRoom = this.room.find(FIND_MY_STRUCTURES, {
+          filter: {structureType: STRUCTURE_EXTRACTOR}
+        });
+        if (!extractorInRoom.length) {
+          let [mineral] = this.room.find(FIND_MINERALS);
+          this.room.createConstructionSite(mineral.pos, STRUCTURE_EXTRACTOR);
+        }
+      }
+    };
+
+  StructureSpawn.prototype.marketSale =
+    function () {
+      if (this.room.terminal && (Game.time % 10 == 0)) {
+          if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_OXYGEN] >= 2000) {
+              var orders = Game.market.getAllOrders(order => order.resourceType == RESOURCE_OXYGEN &&
+                                                    order.type == ORDER_BUY &&
+                                                    Game.market.calcTransactionCost(200, this.room.name, order.roomName) < 400);
+              console.log('Keanium buy orders found: ' + orders.length);
+              if (orders.length > 0) {
+                  orders.sort(function(a,b){return b.price - a.price;});
+                  console.log('Best price: ' + orders[0].price);
+                  if (orders[0].price > 0.7) {
+                      var result = Game.market.deal(orders[0].id, 200, spawn.room.name);
+                      if (result == 0) {
+                          console.log('Order completed successfully');
+                      }
+                  }
+              }
+          }
+      }
     };

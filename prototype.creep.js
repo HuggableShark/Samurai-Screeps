@@ -8,7 +8,7 @@ var roles = {
     claimer: require('role.claimer'),
     miner: require('role.miner'),
     hauler: require('role.hauler'),
-    extractor: require('role.extractor'),
+    mineralMiner: require('role.mineralMiner'),
     roomGuard: require('role.roomGuard')
 };
 
@@ -32,7 +32,7 @@ Creep.prototype.getEnergy =
           }
         }
         // if no container was found and the Creep should look for Sources
-        if (theContainer == undefined && useSource) {
+        if (theContainer == undefined && useSource || theContainer.store.energy == 0) {
             // find closest source
             var source = this.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 

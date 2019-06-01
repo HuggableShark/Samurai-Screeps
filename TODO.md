@@ -1,6 +1,9 @@
 // To-Do list
 !!!
-HIGH PRIORITY!
+HIGHER PRIORITY!
+
+Create a low memory flag for skeleton rooms to save CPU. Place memory in room spawn.
+
 Change the creep.memory.working to something that has more options than true/false
 Early game module for RCL 4 and below
 Clean up spawn logic for role types vs game state

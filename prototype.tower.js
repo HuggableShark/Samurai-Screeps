@@ -7,17 +7,18 @@ StructureTower.prototype.defend =
     if (target != undefined) {
         // ...FIRE!
         this.attack(target);
-        console.log("ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ");
+        console.log("ALERT!!!! WE ARE UNDER ATTACK!!!!! in " + this.room);
     }
 
-    /*
-    else if (target == undefined) {
+/*
+    if (target == undefined) {
       //first heal any damaged creeps
       for (let name in Game.creeps) {
         // get the creep object
-        var creep = Game.creeps[name];
-        if (creep.hits < creep.hitsMax) {
-          this.heal(creep);
+        var creepToHeal = Game.creeps[name];
+        if (creepToHeal.hits < creepToHeal.hitsMax) {
+          console.log(creepToHeal + 'is hurt in ' + this.room);
+          this.heal(creepToHeal);
           console.log("Tower is healing Creeps.");
         }
         else {
@@ -25,9 +26,9 @@ StructureTower.prototype.defend =
         }
       }
     }
-    */
+*/
 
-    else if (target == undefined && this.energy > (this.energyCapacity * 0.5)) {
+    else if (target == undefined && this.energy > (this.energyCapacity * 0.75)) {
       var rampartsToFix = this.room.find(FIND_MY_STRUCTURES, {
         filter: (s) => s.hits < 50000 && s.structureType
                     == STRUCTURE_RAMPART

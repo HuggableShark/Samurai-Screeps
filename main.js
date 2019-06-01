@@ -33,7 +33,7 @@ module.exports.loop = function() {
   // Run all generic spawn logic
   // for each spawn
   for (let spawnName in Game.spawns) {
-    Game.spawns[spawnName].reuse(spawnName);
+    Game.spawns[spawnName].reuse();
     // check that spawn has a minCreeps object
     if (Game.spawns[spawnName].memory.minCreeps == undefined) {
       // if not, give it one
@@ -42,5 +42,7 @@ module.exports.loop = function() {
     }
     // run spawn logic
     Game.spawns[spawnName].spawnCreepsIfNecessary();
+    Game.spawns[spawnName].marketSale();
+    Game.spawns[spawnName].buildExtractor();
   }
 };
