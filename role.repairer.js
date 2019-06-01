@@ -34,7 +34,17 @@ module.exports = {
 
     // if creep is supposed to harvest energy from source
     else {
-      creep.getEnergy(true, true);
+      let storage = creep.room.storage;
+      // First get it from storage
+      if (storage != undefined && creep.room.storage.store[RESOURCE_ENERGY] > 0) {
+        if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(storage);
+        }
+      }
+      // otherwise, get it from containers/sources
+      else {
+        creep.getEnergy(true, true);
+      }
     }
   }
 };

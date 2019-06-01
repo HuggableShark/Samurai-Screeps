@@ -1,6 +1,8 @@
 // This creep goes to targeted nearby rooms to gather energy. Currently has the
 //  occasional glitch of getting stuck at room boarders and jumping back and forth.
 
+var roleBuilder = require('role.builder');
+
 module.exports = {
   // a function to run the logic for this role
   run: function(creep) {
@@ -15,16 +17,35 @@ module.exports = {
       creep.memory.working = true;
     }
 
+    if (creep.ticksToLive < 200) {
+      creep.memory.working = true
+      creep.memory.recycle = true
+      creep.say('reuse me!');
+      var closestSpawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: (s) => (s.structureType == STRUCTURE_SPAWN)
+      });
+      if (creep.memory.recycle = true) {
+        if (creep.room.name == creep.memory.home) {
+          if (creep.pos.getRangeTo(closestSpawn) > 1) {
+            creep.moveTo(closestSpawn);
+          }
+        }
+        else {
+          // find exit to home room
+          var exit = creep.room.findExitTo(creep.memory.home);
+          // and move to exit
+          creep.moveTo(creep.pos.findClosestByRange(exit));
+        }
+      }
+    }
+
     // if creep is supposed to transfer energy to a structure
     if (creep.memory.working == true) {
       // if in home room
       if (creep.room.name == creep.memory.home) {
         // find long term storage
-        var warehouse = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-          filter: (s) => (s.structureType == STRUCTURE_CONTAINER
-                       || s.structureType == STRUCTURE_STORAGE)
-                       && s.store.energy < s.storeCapacity
-        });
+        var storage = creep.room.storage;
+
         // find closest spawn, extension or tower which is not full
         var structure = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
           // the second argument for findClosestByPath is an object which takes
@@ -44,20 +65,28 @@ module.exports = {
           }
         }
         // if we found one
-        else if (warehouse != undefined) {
+        else if (storage != undefined) {
           // try to transfer energy, if it is not in range
-          if (creep.transfer(warehouse, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             // move towards it
-            creep.moveTo(warehouse);
+            creep.moveTo(storage);
           }
         }
       }
       // if not in home room...
       else {
-        // find exit to home room
-        var exit = creep.room.findExitTo(creep.memory.home);
-        // and move to exit
-        creep.moveTo(creep.pos.findClosestByRange(exit));
+        // If there is a construction site
+        var buildSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+        if (buildSite != undefined && creep.room.name == creep.memory.target) {
+          creep.say('building')
+          roleBuilder.run(creep);
+        }
+        else {
+          // find exit to home room
+          var exit = creep.room.findExitTo(creep.memory.home);
+          // and move to exit
+          creep.moveTo(creep.pos.findClosestByRange(exit));
+        }
       }
     }
     // if creep is supposed to harvest energy from source

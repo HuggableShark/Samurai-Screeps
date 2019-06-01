@@ -1,20 +1,16 @@
 // To-Do list
 !!!
-HIGH PRIORITY!
-Pull changes from game files into repo files
+HIGHER PRIORITY!
 
-Apparently broke spawning if containers aren't kept in rooms. Look into how to break out of miner spawn loop if no containers
-Look into creepsInRoom issue
+Create a low memory flag for skeleton rooms to save CPU. Place memory in room spawn.
+
+Change the creep.memory.working to something that has more options than true/false
+Early game module for RCL 4 and below
 Clean up spawn logic for role types vs game state
-Fix tower code for multiple rooms
 !!!
 
+- Create a queue list that for spawn memory to spawn creeps from instead of loop.
 - Create movement code that prioritizes miners getting through packs of creeps
-
+- work on hauler tombstone cleanup code for minerals
 - LOOK INTO RENEW FUNCTIONALITY!!!
-- Better "which container do I pick up from" logic (possibly use hauler code)
-- Create better spawn rules for harvester parts build
-  - Create line for find dropped energy if source is empty
-- Improve tower AI
-- Clean up memory STRUCTURE_STORAGE
-- Combat creeps!
+- Combat squad

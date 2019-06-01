@@ -7,36 +7,32 @@ StructureTower.prototype.defend =
     if (target != undefined) {
         // ...FIRE!
         this.attack(target);
-        console.log("ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ");
+        console.log("ALERT!!!! WE ARE UNDER ATTACK!!!!! in " + this.room);
     }
-};
 
-StructureTower.prototype.repair =
-  function () {
-    var target = this.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-    //if there are no hostiles
+/*
     if (target == undefined) {
       //first heal any damaged creeps
       for (let name in Game.creeps) {
         // get the creep object
-        var creep = Game.creeps[name];
-        if (creep.hits < creep.hitsMax) {
-          towers.forEach(tower => tower.heal(creep));
+        var creepToHeal = Game.creeps[name];
+        if (creepToHeal.hits < creepToHeal.hitsMax) {
+          console.log(creepToHeal + 'is hurt in ' + this.room);
+          this.heal(creepToHeal);
           console.log("Tower is healing Creeps.");
+        }
+        else {
+          break;
         }
       }
     }
-    else if (towers.energy > ((towers.energyCapacity / 10)* 5)){
-      //Find the closest damaged Structure
-      var closestDamagedStructure = towers.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: (s) => s.hits < s.hitsMax && s.structureType
-                    != STRUCTURE_WALL
-                    && s.structureType
-                    != STRUCTURE_RAMPART
+*/
+
+    else if (target == undefined && this.energy > (this.energyCapacity * 0.75)) {
+      var rampartsToFix = this.room.find(FIND_MY_STRUCTURES, {
+        filter: (s) => s.hits < 50000 && s.structureType
+                    == STRUCTURE_RAMPART
       });
-  	  if(closestDamagedStructure) {
-	     towers.repair(closestDamagedStructure);
-	 	   console.log("The tower is repairing buildings.");
-      }
+      this.repair(rampartsToFix[0]);
     }
 };

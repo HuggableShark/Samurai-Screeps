@@ -8,7 +8,8 @@ var roles = {
     claimer: require('role.claimer'),
     miner: require('role.miner'),
     hauler: require('role.hauler'),
-    ammoMule: require('role.ammoMule')
+    mineralMiner: require('role.mineralMiner'),
+    roomGuard: require('role.roomGuard')
 };
 
 Creep.prototype.runRole =
@@ -22,25 +23,16 @@ Creep.prototype.runRole =
 Creep.prototype.getEnergy =
     function (useContainer, useSource) {
         /** @type {StructureContainer} */
-        let container;
         // if the Creep should look for containers
         if (useContainer) {
-            // find closest container
-            container = this.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: s => (s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_STORAGE) &&
-                             s.store[RESOURCE_ENERGY] > 0
-            });
-            // if one was found
-            if (container != undefined) {
-                // try to withdraw energy, if the container is not in range
-                if (this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    // move towards it
-                    this.moveTo(container);
-                }
-            }
+          // Go to the target container.
+          var theContainer = Game.getObjectById(this.memory.targetContainer);
+          if (this.withdraw(theContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            this.moveTo(theContainer);
+          }
         }
         // if no container was found and the Creep should look for Sources
-        if (container == undefined && useSource) {
+        if (theContainer == undefined && useSource || theContainer.store.energy == 0) {
             // find closest source
             var source = this.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 
@@ -49,5 +41,24 @@ Creep.prototype.getEnergy =
                 // move towards it
                 this.moveTo(source);
             }
+        }
+        var target = this.room.find( FIND_STRUCTURES, {
+          filter: (s) => {
+            return (s.structureType == STRUCTURE_CONTAINER);
+          }
+        });
+
+        if (target.length > 0) {
+          var allContainer = [];
+          // Calculate the percentage of energy in each container.
+          for (var i = 0; i < target.length; i++) {
+            allContainer.push({energyPercent:((target[i].store.energy / target[i].storeCapacity) * 100), id:target[i].id});
+          }
+
+          // Get the container containing the most energy.
+          var highestContainer = _.max(allContainer, function(container){return container.energyPercent;});
+          // set the target in memory so the creep dosen't
+          // change target in the middle of the room.
+          this.memory.targetContainer = highestContainer.id;
         }
 };
