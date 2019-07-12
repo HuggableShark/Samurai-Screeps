@@ -9,7 +9,8 @@ var roles = {
     miner: require('role.miner'),
     hauler: require('role.hauler'),
     mineralMiner: require('role.mineralMiner'),
-    roomGuard: require('role.roomGuard')
+    roomGuard: require('role.roomGuard'),
+    sumo: require('role.sumo')
 };
 
 Creep.prototype.runRole =

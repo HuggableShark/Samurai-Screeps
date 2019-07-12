@@ -46,8 +46,8 @@ module.exports = {
                      || s.structureType == STRUCTURE_TOWER)
                      && s.energy < s.energyCapacity
       });
-      var storage = creep.room.storage
-      var terminal = creep.room.terminal
+      var storage = creep.room.storage;
+      var terminal = creep.room.terminal;
 
       // if we found one
       if (structure != undefined) {
@@ -59,7 +59,7 @@ module.exports = {
       }
 
       // uncomment following to not stock terminals
-      else if (terminal != undefined && terminal.store[RESOURCE_ENERGY] < 2000) {
+      else if (terminal != undefined && terminal.store[RESOURCE_ENERGY] < 2500) {
         if (creep.transfer(terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           creep.moveTo(terminal);
         }
@@ -71,16 +71,15 @@ module.exports = {
           creep.moveTo(storage);
         }
       }
-      /*
-      var terminal = creep.room.terminal
+
       var creepWithMinerals = creep.carry
-      // CODE TO DROP OFF MINERALS IN TERMINAL!!!
+      // CODE TO DROP OFF MINERALS IN STORAGE!!!
       if (terminal != undefined && creep.carry.energy == 0) {
         if (creep.transfer(terminal, _.findKey(creep.carry)) == ERR_NOT_IN_RANGE) {
           creep.moveTo(terminal);
         }
       }
-      */
+
     }
     // Otherwise, pick-up from a container
     else {
