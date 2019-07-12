@@ -2,7 +2,7 @@
 require('prototype.creep');
 require('prototype.tower');
 require('prototype.spawn');
-
+require('prototype.market');
 
 module.exports.loop = function() {
   // check for memory entries of died creeps by iterating over Memory.creeps

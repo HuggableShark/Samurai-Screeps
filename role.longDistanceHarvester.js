@@ -96,8 +96,24 @@ module.exports = {
         // find source
         var source = creep.room.find(FIND_SOURCES)[creep.memory.sourceIndex];
 
+        // look for time sensitive resources
+        const [droppedEnergy] = creep.room.find(FIND_DROPPED_RESOURCES, {
+            filter: (e) => (e.resourceType == RESOURCE_ENERGY
+                         && e.amount)
+        });
+        // if there are either
+        if (droppedEnergy != undefined) {
+            // if there is some, pick it up
+            if (droppedEnergy != undefined) {
+                creep.say('ooh, shiny!')
+                if (creep.pickup(droppedEnergy) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(droppedEnergy);
+                }
+            }
+        }
+
         // try to harvest energy, if the source is not in range
-        if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+        else if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
           // move towards the source
           creep.moveTo(source);
         }

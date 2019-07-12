@@ -1,4 +1,4 @@
-var listOfRoles = ['harvester', 'claimer', 'hauler', 'upgrader', 'repairer', 'builder', 'waller'];
+var listOfRoles = ['harvester', 'claimer', 'sumo', 'hauler', 'upgrader', 'repairer', 'builder', 'waller'];
 
 
 // create a new function for StructureSpawn
@@ -73,7 +73,10 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
       filter: e => e.structureType == STRUCTURE_EXTRACTOR
     });
     var numberOfMineralMiners =  _.sum(creepsInRoom, (c) => c.memory.role == 'mineralMiner');
-    if ((extractor != undefined) && (this.room.terminal != undefined)) {
+    var mineralsInRoom = this.room.find(FIND_MINERALS);
+    mineralInRoom = mineralsInRoom[0];
+    mineralLeft = mineralInRoom.mineralAmount;
+    if ((extractor != undefined) && (this.room.terminal != undefined) && (mineralLeft > 0)) {
       if (numberOfMineralMiners < 1) {
         name = this.spawnMineralMiner(400);
       }
@@ -103,6 +106,17 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
           if (name != undefined && _.isString(name)) {
             // delete the claim order
             delete this.memory.claimRoom;
+          }
+          break;
+        }
+        // check for targetRoom order
+        if (role == 'sumo' && this.memory.targetRoom != undefined) {
+          // try to spawn a claimer
+          name = this.spawnSumo(this.memory.targetRoom);
+          // if that worked
+          if (name != undefined && _.isString(name)) {
+            // delete the claim order
+            delete this.memory.targetRoom;
           }
           break;
         }
@@ -319,6 +333,31 @@ StructureSpawn.prototype.spawnRoomGuard =
       return this.spawnCreep(body, nameFromRole, { memory: { role: 'eliteRoomGuard' } });
     };
 
+    // Spawns a Sumo to seige/knock down a room
+    StructureSpawn.prototype.spawnSumo =
+        function (targetRoom) {
+            // make sure the creep is not too big (more than 50 parts)
+            var numberOfToughParts = 16;
+            var numberOfMoveWorkParts = 6;
+            var numberOfHealParts = 2;
+            var body = [];
+            for (let i = 0; i < numberOfToughParts; i++) {
+                body.push(TOUGH);
+            }
+            for (let i = 0; i < numberOfMoveAndWorkParts; i++) {
+                body.push(MOVE);
+                body.push(WORK);
+            }
+            for (let i = 0; i < numberOfHealParts; i++) {
+              body.push(HEAL);
+            }
+            // Name creep by their role + the current game time at spawn
+            var nameFromRole = ('sumo' + Game.time);
+
+            // create creep with the created body and the role 'hauler'
+            return this.spawnCreep(body, nameFromRole, { memory: {role: 'sumo', targetRoom: targetRoom} });
+      };
+
   StructureSpawn.prototype.buildExtractor =
     function () {
       var roomControlLevel = this.room.controller.level;
@@ -330,27 +369,5 @@ StructureSpawn.prototype.spawnRoomGuard =
           let [mineral] = this.room.find(FIND_MINERALS);
           this.room.createConstructionSite(mineral.pos, STRUCTURE_EXTRACTOR);
         }
-      }
-    };
-
-  StructureSpawn.prototype.marketSale =
-    function () {
-      if (this.room.terminal && (Game.time % 10 == 0)) {
-          if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_OXYGEN] >= 2000) {
-              var orders = Game.market.getAllOrders(order => order.resourceType == RESOURCE_OXYGEN &&
-                                                    order.type == ORDER_BUY &&
-                                                    Game.market.calcTransactionCost(200, this.room.name, order.roomName) < 400);
-              console.log('Keanium buy orders found: ' + orders.length);
-              if (orders.length > 0) {
-                  orders.sort(function(a,b){return b.price - a.price;});
-                  console.log('Best price: ' + orders[0].price);
-                  if (orders[0].price > 0.7) {
-                      var result = Game.market.deal(orders[0].id, 200, spawn.room.name);
-                      if (result == 0) {
-                          console.log('Order completed successfully');
-                      }
-                  }
-              }
-          }
       }
     };

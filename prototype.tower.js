@@ -10,7 +10,7 @@ StructureTower.prototype.defend =
         console.log("ALERT!!!! WE ARE UNDER ATTACK!!!!! in " + this.room);
     }
 
-/*
+
     if (target == undefined) {
       //first heal any damaged creeps
       for (let name in Game.creeps) {
@@ -26,13 +26,13 @@ StructureTower.prototype.defend =
         }
       }
     }
-*/
 
-    else if (target == undefined && this.energy > (this.energyCapacity * 0.75)) {
+
+    if (target == undefined && this.energy > (this.energyCapacity * 0.75)) {
       var rampartsToFix = this.room.find(FIND_MY_STRUCTURES, {
-        filter: (s) => s.hits < 50000 && s.structureType
+        filter: (s) => s.hits < 100000 && s.structureType
                     == STRUCTURE_RAMPART
       });
       this.repair(rampartsToFix[0]);
     }
-};
+  };
