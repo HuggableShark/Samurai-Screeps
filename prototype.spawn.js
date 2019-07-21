@@ -45,6 +45,11 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
         name = this.createCustomCreep(room.energyAvailable, 'harvester');
       }
     }
+    // fill in for if all miners and harvesters are gone from room
+    else if (numberOfCreeps['harvester'] == 0 && numberOfCreeps['miner'] == 0) {
+      // spawn a cheap harvester
+      name = this.createCustomCreep(200, 'harvester');
+    }
     // if no backup creep is required
     else if (maxEnergy >= 550) {
       // check if all sources have miners

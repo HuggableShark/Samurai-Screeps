@@ -11,7 +11,7 @@ StructureTower.prototype.defend =
     }
 
 
-    if (target == undefined) {
+    if (target == undefined && this.energy > 0) {
       //first heal any damaged creeps
       for (let name in Game.creeps) {
         // get the creep object
