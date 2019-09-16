@@ -18,12 +18,9 @@ Creep.prototype.runRole =
         roles[this.memory.role].run(this);
     };
 
-/** @function
-    @param {bool} useContainer
-    @param {bool} useSource */
+
 Creep.prototype.getEnergy =
     function (useContainer, useSource) {
-        /** @type {StructureContainer} */
         // if the Creep should look for containers
         if (useContainer) {
           // Go to the target container.

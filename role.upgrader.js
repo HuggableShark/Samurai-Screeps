@@ -22,7 +22,7 @@ module.exports = {
       // try to upgrade the controller
       if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
         // if not in range, move towards the controller
-        creep.moveTo(creep.room.controller);
+        creep.moveTo(creep.room.controller, {reusePath: 10});
       }
     }
     // If creep needs energy
@@ -31,7 +31,7 @@ module.exports = {
       // First get it from storage
       if (storage != undefined && creep.room.storage.store[RESOURCE_ENERGY] > 0) {
         if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(storage);
+          creep.moveTo(storage, {reusePath: 10});
         }
       }
       // otherwise, get it from containers/sources
