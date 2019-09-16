@@ -42,7 +42,9 @@ module.exports.loop = function() {
     }
     // run spawn logic
     Game.spawns[spawnName].spawnCreepsIfNecessary();
-    Game.spawns[spawnName].marketSale();
+    if (Game.cpu.bucket >= 5000) {
+        Game.spawns[spawnName].marketSale();
+    }
     Game.spawns[spawnName].buildExtractor();
   }
 };
