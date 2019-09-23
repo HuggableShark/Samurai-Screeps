@@ -10,7 +10,7 @@ StructureSpawn.prototype.marketSale =
                   orders.sort(function(a,b){return b.price - a.price;});
                   console.log('Best price: ' + orders[0].price);
                   console.log('Order ID = ' + orders[0].id + ' in room ' + orders[0].roomName);
-                  if (orders[0].price >= 0.077) {
+                  if (orders[0].price >= 0.048) {
                       var result = Game.market.deal(orders[0].id, 200, this.room.name);
                       if (result == 0) {
                           console.log('Order completed successfully');
@@ -27,7 +27,7 @@ StructureSpawn.prototype.marketSale =
                   orders.sort(function(a,b){return b.price - a.price;});
                   console.log('Best price: ' + orders[0].price);
                   console.log('Order ID = ' + orders[0].id + ' in room ' + orders[0].roomName);
-                  if (orders[0].price >= 0.214) {
+                  if (orders[0].price >= 0.120) {
                       var result = Game.market.deal(orders[0].id, 200, this.room.name);
                       if (result == 0) {
                           console.log('Order completed successfully');
@@ -44,7 +44,7 @@ StructureSpawn.prototype.marketSale =
                   orders.sort(function(a,b){return b.price - a.price;});
                   console.log('Best price: ' + orders[0].price);
                   console.log('Order ID = ' + orders[0].id + ' in room ' + orders[0].roomName);
-                  if (orders[0].price >= 0.130) {
+                  if (orders[0].price >= 0.110) {
                       var result = Game.market.deal(orders[0].id, 200, this.room.name);
                       if (result == 0) {
                           console.log('Order completed successfully');
@@ -61,7 +61,7 @@ StructureSpawn.prototype.marketSale =
                   orders.sort(function(a,b){return b.price - a.price;});
                   console.log('Best price: ' + orders[0].price);
                   console.log('Order ID = ' + orders[0].id + ' in room ' + orders[0].roomName);
-                  if (orders[0].price >= 0.100) {
+                  if (orders[0].price >= 0.113) {
                       var result = Game.market.deal(orders[0].id, 200, this.room.name);
                       if (result == 0) {
                           console.log('Order completed successfully');
@@ -78,7 +78,7 @@ StructureSpawn.prototype.marketSale =
                   orders.sort(function(a,b){return b.price - a.price;});
                   console.log('Best price: ' + orders[0].price);
                   console.log('Order ID = ' + orders[0].id + ' in room ' + orders[0].roomName);
-                  if (orders[0].price >= 0.100) {
+                  if (orders[0].price >= 0.090) {
                       var result = Game.market.deal(orders[0].id, 200, this.room.name);
                       if (result == 0) {
                           console.log('Order completed successfully');
@@ -95,7 +95,7 @@ StructureSpawn.prototype.marketSale =
                    orders.sort(function(a,b){return b.price - a.price;});
                    console.log('Best price: ' + orders[0].price);
                    console.log('Order ID = ' + orders[0].id + ' in room ' + orders[0].roomName);
-                   if (orders[0].price >= 0.100) {
+                   if (orders[0].price >= 0.065) {
                        var result = Game.market.deal(orders[0].id, 200, this.room.name);
                        if (result == 0) {
                            console.log('Order completed successfully');

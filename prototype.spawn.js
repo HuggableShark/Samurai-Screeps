@@ -369,3 +369,68 @@ StructureSpawn.prototype.spawnRoomGuard =
         }
       }
     };
+
+    // Spawn a powerAttacker creep
+    StructureSpawn.prototype.spawnPowerAttacker =
+        function (energy, targetRoom) {
+            var minNumberOfToughParts = 1;
+            var minNumberOfMoveParts = 2;
+            var minNumberofAttackParts = 1;
+            // Body energy is 80+10+50+50=190
+            var numberOfParts = Math.floor(energy / 190);
+            numberOfParts = Math.min(numberOfParts, Math.floor(50 / 4));
+            var body = [];
+            for (let i = 0; i < numberOfParts; i++) {
+              body.push(TOUGH);
+            }
+            for (let i = 0; i < numberOfParts; i++) {
+              body.push(MOVE,MOVE);
+            }
+            for (let i = 0; i < numberOfParts; i++) {
+              body.push(ATTACK);
+            }
+            var nameFromRole = ('powerAttacker' + targetRoom + Game.time);
+            var home = this.room;
+
+            return this.spawnCreep(body, nameFromRole, {
+                memory: {
+                    role: 'powerAttacker',
+                    targetRoom: targetRoom,
+                    home: this.room,
+                    powerSourceAvailable: true
+                }
+            });
+        };
+
+        //Spawn a powerHealer !!!!Future improvements needed to pair with attacker
+        StructureSpawn.prototype.spawnPowerHealer =
+            function (energy, targetRoom) {
+                var minNumberOfCarryParts = 1;
+                var minNumberOfMoveParts = 2;
+                var minNumberofHealParts = 1;
+                // Body energy is 250+50+50+50=400
+                var numberOfParts = Math.floor(energy / 400);
+                numberOfParts = Math.min(numberOfParts, Math.floor(50 / 4));
+                var body = [];
+                for (let i = 0; i < numberOfParts; i++) {
+                  body.push(MOVE,MOVE);
+                }
+                for (let i = 0; i < numberOfParts; i++) {
+                  body.push(HEAL);
+                }
+                for (let i = 0; i < numberOfParts; i++) {
+                  body.push(CARRY);
+                }
+
+                var nameFromRole = ('powerHealer' + targetRoom + Game.time);
+                var home = this.room;
+
+                return this.spawnCreep(body, nameFromRole, {
+                    memory: {
+                        role: 'powerHealer',
+                        targetRoom: targetRoom,
+                        home: this.room,
+                        powerSourceAvailable: true
+                    }
+                });
+            };
