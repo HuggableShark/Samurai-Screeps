@@ -2,6 +2,7 @@
 //  occasional glitch of getting stuck at room boarders and jumping back and forth.
 
 var roleBuilder = require('role.builder');
+var roleUpgrader = require('role.upgrader');
 
 module.exports = {
   // a function to run the logic for this role
@@ -71,6 +72,9 @@ module.exports = {
             // move towards it
             creep.moveTo(storage);
           }
+        }
+        else {
+          roleUpgrader.run(creep);
         }
       }
       // if not in home room...

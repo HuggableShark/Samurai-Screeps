@@ -20,15 +20,6 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
     let halfEnergy = room.energyCapacityAvailable / 2
     let name = undefined;
 
-    // if there is a miner and a hauler, don't spawn harvesters
-    if (numberOfCreeps['miner'] > 0 && numberOfCreeps['hauler'] > 0) {
-      this.memory.minCreeps.harvester = 0;
-    }
-    // if there are no miner and haulers, spawn harvesters when necessary
-    else if(numberOfCreeps['miner'] == 0 && numberOfCreeps['hauler'] == 0){
-      this.memory.minCreeps.harvester = 2;
-    }
-
 
     // if no harvesters are left AND either no miners or no haulers are left
     //  create a backup creep
@@ -39,12 +30,19 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
         // create a hauler
         name = this.createHauler(room.energyAvailable);
       }
-      // if there is no miner and not enough energy in Storage left
+      // if there is no miner and not enough energy in the room left
       else {
         // create a harvester because it can work on its own
         name = this.createCustomCreep(room.energyAvailable, 'harvester');
       }
     }
+    /*
+    // fill in for if all miners and harvesters are gone from room
+    else if (numberOfCreeps['harvester'] == 0 && numberOfCreeps['miner'] == 0) {
+      // spawn a cheap harvester
+      name = this.createCustomCreep(200, 'harvester');
+    }
+    */
     // if no backup creep is required
     else if (maxEnergy >= 550) {
       // check if all sources have miners
@@ -91,11 +89,11 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
         name = this.spawnRoomGuard(room.energyAvailable);
       }
       else if (numberOfDefenders < 4) {
-        name = this.spawnRoomGuard(beefyBoy)
+        name = this.spawnRoomGuard(beefyBoy);
       }
     }
 
-    // if none of the above caused a spawn command check for other roles
+    // if none of the above caused a spawn command, check for other roles
     if (name == undefined) {
       for (let role of listOfRoles) {
         // check for claim order
@@ -126,7 +124,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
             name = this.createHauler(halfEnergy);
           }
           else {
-            name = this.createCustomCreep(maxEnergy, role);
+            name = this.createCustomCreep(room.energyAvailable, role);
             break;
           }
         }
@@ -371,3 +369,68 @@ StructureSpawn.prototype.spawnRoomGuard =
         }
       }
     };
+
+    // Spawn a powerAttacker creep
+    StructureSpawn.prototype.spawnPowerAttacker =
+        function (energy, targetRoom) {
+            var minNumberOfToughParts = 1;
+            var minNumberOfMoveParts = 2;
+            var minNumberofAttackParts = 1;
+            // Body energy is 80+10+50+50=190
+            var numberOfParts = Math.floor(energy / 190);
+            numberOfParts = Math.min(numberOfParts, Math.floor(50 / 4));
+            var body = [];
+            for (let i = 0; i < numberOfParts; i++) {
+              body.push(TOUGH);
+            }
+            for (let i = 0; i < numberOfParts; i++) {
+              body.push(MOVE,MOVE);
+            }
+            for (let i = 0; i < numberOfParts; i++) {
+              body.push(ATTACK);
+            }
+            var nameFromRole = ('powerAttacker' + targetRoom + Game.time);
+            var home = this.room;
+
+            return this.spawnCreep(body, nameFromRole, {
+                memory: {
+                    role: 'powerAttacker',
+                    targetRoom: targetRoom,
+                    home: this.room,
+                    powerSourceAvailable: true
+                }
+            });
+        };
+
+        //Spawn a powerHealer !!!!Future improvements needed to pair with attacker
+        StructureSpawn.prototype.spawnPowerHealer =
+            function (energy, targetRoom) {
+                var minNumberOfCarryParts = 1;
+                var minNumberOfMoveParts = 2;
+                var minNumberofHealParts = 1;
+                // Body energy is 250+50+50+50=400
+                var numberOfParts = Math.floor(energy / 400);
+                numberOfParts = Math.min(numberOfParts, Math.floor(50 / 4));
+                var body = [];
+                for (let i = 0; i < numberOfParts; i++) {
+                  body.push(MOVE,MOVE);
+                }
+                for (let i = 0; i < numberOfParts; i++) {
+                  body.push(HEAL);
+                }
+                for (let i = 0; i < numberOfParts; i++) {
+                  body.push(CARRY);
+                }
+
+                var nameFromRole = ('powerHealer' + targetRoom + Game.time);
+                var home = this.room;
+
+                return this.spawnCreep(body, nameFromRole, {
+                    memory: {
+                        role: 'powerHealer',
+                        targetRoom: targetRoom,
+                        home: this.room,
+                        powerSourceAvailable: true
+                    }
+                });
+            };

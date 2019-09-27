@@ -1,7 +1,7 @@
 StructureSpawn.prototype.marketSale =
     function () {
       if (this.room.terminal && (Game.time % 10 == 0)) {
-          if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_KEANIUM] >= 2000) {
+          if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_KEANIUM] >= 5000) {
               var orders = Game.market.getAllOrders(order => order.resourceType == RESOURCE_KEANIUM &&
                                                     order.type == ORDER_BUY &&
                                                     Game.market.calcTransactionCost(200, this.room.name, order.roomName) < 400);
@@ -10,7 +10,7 @@ StructureSpawn.prototype.marketSale =
                   orders.sort(function(a,b){return b.price - a.price;});
                   console.log('Best price: ' + orders[0].price);
                   console.log('Order ID = ' + orders[0].id + ' in room ' + orders[0].roomName);
-                  if (orders[0].price >= 0.077) {
+                  if (orders[0].price >= 0.048) {
                       var result = Game.market.deal(orders[0].id, 200, this.room.name);
                       if (result == 0) {
                           console.log('Order completed successfully');
@@ -18,7 +18,7 @@ StructureSpawn.prototype.marketSale =
                   }
               }
           }
-          if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_CATALYST] >= 2000) {
+          if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_CATALYST] >= 5000) {
               var orders = Game.market.getAllOrders(order => order.resourceType == RESOURCE_CATALYST &&
                                                     order.type == ORDER_BUY &&
                                                     Game.market.calcTransactionCost(200, this.room.name, order.roomName) < 400);
@@ -27,7 +27,7 @@ StructureSpawn.prototype.marketSale =
                   orders.sort(function(a,b){return b.price - a.price;});
                   console.log('Best price: ' + orders[0].price);
                   console.log('Order ID = ' + orders[0].id + ' in room ' + orders[0].roomName);
-                  if (orders[0].price >= 0.214) {
+                  if (orders[0].price >= 0.120) {
                       var result = Game.market.deal(orders[0].id, 200, this.room.name);
                       if (result == 0) {
                           console.log('Order completed successfully');
@@ -35,7 +35,7 @@ StructureSpawn.prototype.marketSale =
                   }
               }
           }
-          if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_OXYGEN] >= 2000) {
+          if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_OXYGEN] >= 5000) {
               var orders = Game.market.getAllOrders(order => order.resourceType == RESOURCE_OXYGEN &&
                                                     order.type == ORDER_BUY &&
                                                     Game.market.calcTransactionCost(200, this.room.name, order.roomName) < 400);
@@ -44,7 +44,7 @@ StructureSpawn.prototype.marketSale =
                   orders.sort(function(a,b){return b.price - a.price;});
                   console.log('Best price: ' + orders[0].price);
                   console.log('Order ID = ' + orders[0].id + ' in room ' + orders[0].roomName);
-                  if (orders[0].price >= 0.130) {
+                  if (orders[0].price >= 0.110) {
                       var result = Game.market.deal(orders[0].id, 200, this.room.name);
                       if (result == 0) {
                           console.log('Order completed successfully');
@@ -52,7 +52,7 @@ StructureSpawn.prototype.marketSale =
                   }
               }
           }
-          if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_LEMERGIUM] >= 2000) {
+          if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_LEMERGIUM] >= 5000) {
               var orders = Game.market.getAllOrders(order => order.resourceType == RESOURCE_LEMERGIUM &&
                                                     order.type == ORDER_BUY &&
                                                     Game.market.calcTransactionCost(200, this.room.name, order.roomName) < 400);
@@ -61,7 +61,7 @@ StructureSpawn.prototype.marketSale =
                   orders.sort(function(a,b){return b.price - a.price;});
                   console.log('Best price: ' + orders[0].price);
                   console.log('Order ID = ' + orders[0].id + ' in room ' + orders[0].roomName);
-                  if (orders[0].price >= 0.100) {
+                  if (orders[0].price >= 0.113) {
                       var result = Game.market.deal(orders[0].id, 200, this.room.name);
                       if (result == 0) {
                           console.log('Order completed successfully');
@@ -69,7 +69,7 @@ StructureSpawn.prototype.marketSale =
                   }
               }
           }
-         if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_HYDROGEN] >= 2000) {
+         if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_HYDROGEN] >= 5000) {
               var orders = Game.market.getAllOrders(order => order.resourceType == RESOURCE_HYDROGEN &&
                                                     order.type == ORDER_BUY &&
                                                     Game.market.calcTransactionCost(200, this.room.name, order.roomName) < 400);
@@ -78,7 +78,7 @@ StructureSpawn.prototype.marketSale =
                   orders.sort(function(a,b){return b.price - a.price;});
                   console.log('Best price: ' + orders[0].price);
                   console.log('Order ID = ' + orders[0].id + ' in room ' + orders[0].roomName);
-                  if (orders[0].price >= 0.100) {
+                  if (orders[0].price >= 0.090) {
                       var result = Game.market.deal(orders[0].id, 200, this.room.name);
                       if (result == 0) {
                           console.log('Order completed successfully');
@@ -86,5 +86,22 @@ StructureSpawn.prototype.marketSale =
                   }
               }
           }
+          if (this.room.terminal.store[RESOURCE_ENERGY] >= 2000 && this.room.terminal.store[RESOURCE_UTRIUM] >= 5000) {
+               var orders = Game.market.getAllOrders(order => order.resourceType == RESOURCE_UTRIUM &&
+                                                     order.type == ORDER_BUY &&
+                                                     Game.market.calcTransactionCost(200, this.room.name, order.roomName) < 400);
+               console.log('Utrium buy orders found: ' + orders.length);
+               if (orders.length > 0) {
+                   orders.sort(function(a,b){return b.price - a.price;});
+                   console.log('Best price: ' + orders[0].price);
+                   console.log('Order ID = ' + orders[0].id + ' in room ' + orders[0].roomName);
+                   if (orders[0].price >= 0.065) {
+                       var result = Game.market.deal(orders[0].id, 200, this.room.name);
+                       if (result == 0) {
+                           console.log('Order completed successfully');
+                       }
+                   }
+               }
+           }
       }
   };

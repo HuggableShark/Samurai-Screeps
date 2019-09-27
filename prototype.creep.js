@@ -10,7 +10,9 @@ var roles = {
     hauler: require('role.hauler'),
     mineralMiner: require('role.mineralMiner'),
     roomGuard: require('role.roomGuard'),
-    sumo: require('role.sumo')
+    sumo: require('role.sumo'),
+    powerAttacker: require('role.powerAttacker'),
+    powerHealer: require('role.powerHealer')
 };
 
 Creep.prototype.runRole =
@@ -18,12 +20,9 @@ Creep.prototype.runRole =
         roles[this.memory.role].run(this);
     };
 
-/** @function
-    @param {bool} useContainer
-    @param {bool} useSource */
+
 Creep.prototype.getEnergy =
     function (useContainer, useSource) {
-        /** @type {StructureContainer} */
         // if the Creep should look for containers
         if (useContainer) {
           // Go to the target container.

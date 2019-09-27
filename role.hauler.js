@@ -20,7 +20,7 @@ module.exports = {
       creep.memory.targetContainer = false;
     }
 
-    if (creep.ticksToLive < 200 && creep.carry.energy == 0) {
+    if (creep.ticksToLive < 200 && creep.carry == 0) {
       creep.memory.recycle = true
       creep.say('reuse me!');
       var closestSpawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -37,7 +37,7 @@ module.exports = {
     // if creep is supposed to transfer energy to a structure
     else if (creep.memory.working == true) {
       // find closest spawn, extension or tower which is not full
-      var structure = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+      const structure = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
         // the second argument for findClosestByPath is an object which takes
         // a property called filter which can be a function
         // we use the arrow operator to define it
@@ -46,8 +46,8 @@ module.exports = {
                      || s.structureType == STRUCTURE_TOWER)
                      && s.energy < s.energyCapacity
       });
-      var storage = creep.room.storage;
-      var terminal = creep.room.terminal;
+      const storage = creep.room.storage;
+      const terminal = creep.room.terminal;
 
       // if we found one
       if (structure != undefined) {
@@ -72,13 +72,17 @@ module.exports = {
         }
       }
 
+     // !!!!!NEED TO FIND A BETTER WAY TO CHECK FOR JUST MINERALS!!!!
+
       var creepWithMinerals = creep.carry
-      // CODE TO DROP OFF MINERALS IN STORAGE!!!
+      //CODE TO DROP OFF MINERALS IN STORAGE!!!
       if (terminal != undefined && creep.carry.energy == 0) {
-        if (creep.transfer(terminal, _.findKey(creep.carry)) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(terminal);
+        creep.say('Droppin off Minerals');
+        if (creep.transfer(terminal, _.findKey(creepWithMinerals)) == ERR_NOT_IN_RANGE) {
+          return creep.moveTo(terminal);
         }
       }
+
 
     }
     // Otherwise, pick-up from a container
