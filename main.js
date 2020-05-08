@@ -1,11 +1,17 @@
+/*
+Primary loop module. Loops though all rooms and creeps and runs appropriate
+tasks
+*/
+
 // import modules
+require('globals');
 require('prototype.creep');
 require('prototype.tower');
 require('prototype.spawn');
 require('prototype.market');
 
 module.exports.loop = function() {
-    // check for memory entries of died creeps by iterating over Memory.creeps
+    // check for memory entries of dead creeps by iterating over Memory.creeps
     for (let name in Memory.creeps) {
         // and checking if the creep is still alive
         if (Game.creeps[name] == undefined) {
@@ -15,7 +21,7 @@ module.exports.loop = function() {
     }
 
     // Run all generic creep logic
-    // for each creeps
+    // for each creep
     for (let name in Game.creeps) {
         // run creep logic
         Game.creeps[name].runRole();
@@ -50,6 +56,7 @@ module.exports.loop = function() {
         Game.spawns[spawnName].spawnCreepsIfNecessary();
         if (Game.cpu.bucket >= 5000) {
             Game.spawns[spawnName].marketSale();
+            //Game.spawns[spawnName].sellOrder();
         }
         Game.spawns[spawnName].buildExtractor();
     }

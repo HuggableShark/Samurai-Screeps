@@ -17,7 +17,7 @@ StructureTower.prototype.defend =
         // get the creep object
         var creepToHeal = Game.creeps[name];
         if (creepToHeal.hits < creepToHeal.hitsMax) {
-          console.log(creepToHeal + 'is hurt in ' + this.room);
+          console.log(creepToHeal + ' is hurt in ' + this.room);
           this.heal(creepToHeal);
           console.log("Tower is healing Creeps.");
         }
@@ -33,6 +33,8 @@ StructureTower.prototype.defend =
         filter: (s) => s.hits < 100000 && s.structureType
                     == STRUCTURE_RAMPART
       });
-      this.repair(rampartsToFix[0]);
+      if (rampartsToFix.length > 0) {
+          this.repair(rampartsToFix[0]);
+      }
     }
   };

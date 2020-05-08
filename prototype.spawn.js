@@ -23,7 +23,7 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
 
     // if no harvesters are left AND either no miners or no haulers are left
     //  create a backup creep
-    if (numberOfCreeps['harvester'] == 0 && numberOfCreeps['hauler'] == 0) {
+    if (numberOfCreeps['harvester'] == 0 && numberOfCreeps['miner'] == 0) {
       // if there are still miners or enough energy in Storage left
       if (numberOfCreeps['miner'] > 0 ||
         (room.storage != undefined && room.energyAvailable >= 150)) {
@@ -160,69 +160,70 @@ StructureSpawn.prototype.spawnCreepsIfNecessary =
 
 // create a new function for StructureSpawn
 StructureSpawn.prototype.createCustomCreep =
-  function (energy, roleName) {
-    // create a balanced body as big as possible with the given energy
-    var numberOfParts = Math.floor(energy / 200);
-    // make sure the creep is not too big (no more than 30 parts for efficiency)
-    numberOfParts = Math.min(numberOfParts, Math.floor(30 / 3));
-    var body = [];
-    for (let i = 0; i < numberOfParts; i++) {
-      body.push(WORK);
-    }
-    for (let i = 0; i < numberOfParts; i++) {
-      body.push(CARRY);
-    }
-    for (let i = 0; i < numberOfParts; i++) {
-      body.push(MOVE);
-    }
-    // Name creep by their role + the current game time at spawn
-    var nameFromRole = (roleName + Game.time);
+    function (energy, roleName) {
+        // create a balanced body as big as possible with the given energy
+        var numberOfParts = Math.floor(energy / 200);
+        // make sure the creep is not too big (no more than 30 parts for efficiency)
+        numberOfParts = Math.min(numberOfParts, Math.floor(30 / 3));
+        var body = [];
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(WORK);
+        }
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(CARRY);
+        }
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(MOVE);
+        }
+        // Name creep by their role + the current game time at spawn
+        var nameFromRole = (roleName + Game.time);
 
-    // create creep with the created body and the given role
-    return this.createCreep(body, nameFromRole, { role: roleName, working: false });
-  };
+        // create creep with the created body and the given role
+        return this.createCreep(body, nameFromRole, { role: roleName, working: false });
+    };
 
 // create a new function for StructureSpawn
 StructureSpawn.prototype.createLongDistanceHarvester =
-  function (energy, numberOfWorkParts, home, target, sourceIndex) {
-    // create a body with the specified number of WORK parts and one MOVE part per non-MOVE part
-    var body = [];
-    for (let i = 0; i < numberOfWorkParts; i++) {
-      body.push(WORK);
-    }
+    function (energy, numberOfWorkParts, home, target, sourceIndex) {
+        // create a body with the specified number of WORK parts and one MOVE part per non-MOVE part
+        var body = [];
+        for (let i = 0; i < numberOfWorkParts; i++) {
+            body.push(WORK);
+        }
 
-    // 150 = 100 (cost of WORK) + 50 (cost of MOVE)
-    energy -= 150 * numberOfWorkParts;
+        // 150 = 100 (cost of WORK) + 50 (cost of MOVE)
+        energy -= 150 * numberOfWorkParts;
 
-    var numberOfParts = Math.floor(energy / 100);
-    // make sure the creep is not too big (more than 50 parts)
-    numberOfParts = Math.min(numberOfParts, Math.floor((50 - numberOfWorkParts * 2) / 2));
-    for (let i = 0; i < numberOfParts; i++) {
-      body.push(CARRY);
-    }
-    for (let i = 0; i < numberOfParts + numberOfWorkParts; i++) {
-      body.push(MOVE);
-    }
-    // Name creep by their role + the current game time at spawn
-    var nameFromRole = ('ldh' + target + '_' + Game.time);
+        var numberOfParts = Math.floor(energy / 100);
+        // make sure the creep is not too big (more than 50 parts)
+        numberOfParts = Math.min(numberOfParts, Math.floor((50 - numberOfWorkParts * 2) / 2));
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(CARRY);
+        }
+        for (let i = 0; i < numberOfParts + numberOfWorkParts; i++) {
+            body.push(MOVE);
+        }
+        // Name creep by their role + the current game time at spawn
+        var nameFromRole = ('ldh' + target + '_' + Game.time);
 
-    // create creep with the created body
-    return this.createCreep(body, nameFromRole, {
-      role: 'longDistanceHarvester',
-      home: home,
-      target: target,
-      sourceIndex: sourceIndex,
-      working: false
-    });
-  };
+        // create creep with the created body
+        return this.createCreep(body, nameFromRole, {
+            role: 'longDistanceHarvester',
+            home: home,
+            target: target,
+            sourceIndex: sourceIndex,
+            working: false
+        });
+    };
 
 // create a new function for StructureSpawn
 StructureSpawn.prototype.createClaimer =
-  function (target) {
-    // Name creep by their role + the current game time at spawn
-    var nameFromRole = ('claimer' + Game.time);
-    return this.createCreep([CLAIM, MOVE, WORK, CARRY], nameFromRole, { role: 'claimer', target: target, working: false });
-  };
+    function (target) {
+        // Name creep by their role + the current game time at spawn
+        var nameFromRole = ('claimer' + Game.time);
+        return this.createCreep([CLAIM, MOVE, WORK, CARRY], nameFromRole,
+                        { role: 'claimer', target: target, working: false });
+        };
 
 // create a new function for StructureSpawn
 StructureSpawn.prototype.createMiner =
@@ -240,7 +241,7 @@ StructureSpawn.prototype.createMiner =
     // Name creep by their role + the current game time at spawn
     var nameFromRole = ('miner' + Game.time);
     return this.createCreep(body, nameFromRole,
-                              { role: 'miner', sourceId: sourceId });
+                            { role: 'miner', sourceId: sourceId });
   };
 
 // create a new function for StructureSpawn
@@ -266,171 +267,171 @@ StructureSpawn.prototype.createHauler =
 
 // create a function to spawn extractors
 StructureSpawn.prototype.spawnMineralMiner =
-  function (energy) {
-    var body = [WORK, WORK, CARRY, MOVE, MOVE, MOVE];
-    // Name creep by their role + the current game time at spawn
-    var nameFromRole = ('mineralMiner' + Game.time);
+    function (energy) {
+        var body = [WORK, WORK, CARRY, MOVE, MOVE, MOVE];
+        // Name creep by their role + the current game time at spawn
+        var nameFromRole = ('mineralMiner' + Game.time);
 
-    // create creep with the created body and the role 'hauler'
-    return this.spawnCreep(body, nameFromRole, {memory: {role: 'mineralMiner', extracting: false}});
-};
+        // create creep with the created body and the role 'hauler'
+        return this.spawnCreep(body, nameFromRole, {memory: {role: 'mineralMiner', extracting: false}});
+    };
 
 
 // create a new function to recycle creeps if they have said memory status
 StructureSpawn.prototype.reuse =
-  function () {
-    let room = this.room;
-    let creepsInRoom = room.find(FIND_MY_CREEPS);
-    for (creep of creepsInRoom) {
-      if (creep.memory.recycle != undefined) {
-        var creepToRecycle = creep
-        this.recycleCreep(creepToRecycle);
-        break;
-      }
-    }
-  };
+    function () {
+        let room = this.room;
+        let creepsInRoom = room.find(FIND_MY_CREEPS);
+        for (creep of creepsInRoom) {
+            if (creep.memory.recycle != undefined) {
+                var creepToRecycle = creep
+                this.recycleCreep(creepToRecycle);
+                break;
+            }
+        }
+    };
 
 // roomGuard Spawn code
 StructureSpawn.prototype.spawnRoomGuard =
-  function (energy) {
-    var numberOfParts = Math.floor(energy / 130);
-    numberOfParts = Math.min(numberOfParts, Math.floor(50 / 2));
-    var body = [];
-    for (let i = 0; i < numberOfParts; i++) {
-        body.push(ATTACK);
-    }
-    for (let i = 0; i < numberOfParts; i++) {
-        body.push(MOVE);
-    }
-    // Name creep by their role + the current game time at spawn
-    var nameFromRole = ('roomGuard' + Game.time);
-
-    // create creep with the created body and the role 'hauler'
-    return this.spawnCreep(body, nameFromRole, { memory: { role: 'roomGuard' } });
-  };
-
-  // roomGuard + heals spawnCode
-  StructureSpawn.prototype.spawnEliteRoomGuard =
     function (energy) {
-      var numberOfParts = Math.floor(energy / 280);
-      numberOfParts = Math.min(numberOfParts, Math.floor(50 / 2));
-      var body = [];
-      for (let i = 0; i < numberOfParts; i++) {
-          body.push(ATTACK);
-      }
-      for (let i = 0; i < numberOfParts * 2; i++) {
-          body.push(MOVE);
-      }
-      for (let i = 0; i < numberOfParts; i++) {
-          body.push(HEAL);
-      }
-      // Name creep by their role + the current game time at spawn
-      var nameFromRole = ('eliteRoomGuard' + Game.time);
-
-      // create creep with the created body and the role 'hauler'
-      return this.spawnCreep(body, nameFromRole, { memory: { role: 'eliteRoomGuard' } });
-    };
-
-    // Spawns a Sumo to seige/knock down a room
-    StructureSpawn.prototype.spawnSumo =
-        function (targetRoom) {
-            // make sure the creep is not too big (more than 50 parts)
-            var numberOfToughParts = 16;
-            var numberOfMoveWorkParts = 6;
-            var numberOfHealParts = 2;
-            var body = [];
-            for (let i = 0; i < numberOfToughParts; i++) {
-                body.push(TOUGH);
-            }
-            for (let i = 0; i < numberOfMoveAndWorkParts; i++) {
-                body.push(MOVE);
-                body.push(WORK);
-            }
-            for (let i = 0; i < numberOfHealParts; i++) {
-              body.push(HEAL);
-            }
-            // Name creep by their role + the current game time at spawn
-            var nameFromRole = ('sumo' + Game.time);
-
-            // create creep with the created body and the role 'hauler'
-            return this.spawnCreep(body, nameFromRole, { memory: {role: 'sumo', targetRoom: targetRoom} });
-      };
-
-  StructureSpawn.prototype.buildExtractor =
-    function () {
-      var roomControlLevel = this.room.controller.level;
-      if (roomControlLevel >= 6) {
-        var extractorInRoom = this.room.find(FIND_MY_STRUCTURES, {
-          filter: {structureType: STRUCTURE_EXTRACTOR}
-        });
-        if (!extractorInRoom.length) {
-          let [mineral] = this.room.find(FIND_MINERALS);
-          this.room.createConstructionSite(mineral.pos, STRUCTURE_EXTRACTOR);
+        var numberOfParts = Math.floor(energy / 130);
+        numberOfParts = Math.min(numberOfParts, Math.floor(50 / 2));
+        var body = [];
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(ATTACK);
         }
-      }
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(MOVE);
+        }
+        // Name creep by their role + the current game time at spawn
+        var nameFromRole = ('roomGuard' + Game.time);
+
+        // create creep with the created body and the role 'hauler'
+        return this.spawnCreep(body, nameFromRole, { memory: { role: 'roomGuard' } });
     };
 
-    // Spawn a powerAttacker creep
-    StructureSpawn.prototype.spawnPowerAttacker =
-        function (energy, targetRoom) {
-            var minNumberOfToughParts = 1;
-            var minNumberOfMoveParts = 2;
-            var minNumberofAttackParts = 1;
-            // Body energy is 80+10+50+50=190
-            var numberOfParts = Math.floor(energy / 190);
-            numberOfParts = Math.min(numberOfParts, Math.floor(50 / 4));
-            var body = [];
-            for (let i = 0; i < numberOfParts; i++) {
-              body.push(TOUGH);
-            }
-            for (let i = 0; i < numberOfParts; i++) {
-              body.push(MOVE,MOVE);
-            }
-            for (let i = 0; i < numberOfParts; i++) {
-              body.push(ATTACK);
-            }
-            var nameFromRole = ('powerAttacker' + targetRoom + Game.time);
-            var home = this.room;
+// roomGuard + heals spawnCode
+StructureSpawn.prototype.spawnEliteRoomGuard =
+    function (energy) {
+        var numberOfParts = Math.floor(energy / 280);
+        numberOfParts = Math.min(numberOfParts, Math.floor(50 / 2));
+        var body = [];
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(ATTACK);
+        }
+        for (let i = 0; i < numberOfParts * 2; i++) {
+            body.push(MOVE);
+        }
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(HEAL);
+        }
+        // Name creep by their role + the current game time at spawn
+        var nameFromRole = ('eliteRoomGuard' + Game.time);
 
-            return this.spawnCreep(body, nameFromRole, {
-                memory: {
-                    role: 'powerAttacker',
-                    targetRoom: targetRoom,
-                    home: this.room,
-                    powerSourceAvailable: true
-                }
+        // create creep with the created body and the role 'hauler'
+        return this.spawnCreep(body, nameFromRole, { memory: { role: 'eliteRoomGuard' } });
+    };
+
+// Spawns a Sumo to seige/knock down a room
+StructureSpawn.prototype.spawnSumo =
+    function (targetRoom) {
+        // make sure the creep is not too big (more than 50 parts)
+        var numberOfToughParts = 16;
+        var numberOfMoveWorkParts = 6;
+        var numberOfHealParts = 2;
+        var body = [];
+        for (let i = 0; i < numberOfToughParts; i++) {
+            body.push(TOUGH);
+        }
+        for (let i = 0; i < numberOfMoveAndWorkParts; i++) {
+            body.push(MOVE);
+            body.push(WORK);
+        }
+        for (let i = 0; i < numberOfHealParts; i++) {
+          body.push(HEAL);
+        }
+        // Name creep by their role + the current game time at spawn
+        var nameFromRole = ('sumo' + Game.time);
+
+        // create creep with the created body and the role 'hauler'
+        return this.spawnCreep(body, nameFromRole, { memory: {role: 'sumo', targetRoom: targetRoom} });
+    };
+
+StructureSpawn.prototype.buildExtractor =
+    function () {
+        var roomControlLevel = this.room.controller.level;
+        if (roomControlLevel >= 6) {
+            var extractorInRoom = this.room.find(FIND_MY_STRUCTURES, {
+                filter: {structureType: STRUCTURE_EXTRACTOR}
             });
-        };
+            if (!extractorInRoom.length) {
+                let [mineral] = this.room.find(FIND_MINERALS);
+                this.room.createConstructionSite(mineral.pos, STRUCTURE_EXTRACTOR);
+            }
+        }
+    };
 
-        //Spawn a powerHealer !!!!Future improvements needed to pair with attacker
-        StructureSpawn.prototype.spawnPowerHealer =
-            function (energy, targetRoom) {
-                var minNumberOfCarryParts = 1;
-                var minNumberOfMoveParts = 2;
-                var minNumberofHealParts = 1;
-                // Body energy is 250+50+50+50=400
-                var numberOfParts = Math.floor(energy / 400);
-                numberOfParts = Math.min(numberOfParts, Math.floor(50 / 4));
-                var body = [];
-                for (let i = 0; i < numberOfParts; i++) {
-                  body.push(MOVE,MOVE);
-                }
-                for (let i = 0; i < numberOfParts; i++) {
-                  body.push(HEAL);
-                }
-                for (let i = 0; i < numberOfParts; i++) {
-                  body.push(CARRY);
-                }
+// Spawn a powerAttacker creep
+StructureSpawn.prototype.spawnPowerAttacker =
+    function (energy, targetRoom) {
+        var minNumberOfToughParts = 1;
+        var minNumberOfMoveParts = 2;
+        var minNumberofAttackParts = 1;
+        // Body energy is 80+10+50+50=190
+        var numberOfParts = Math.floor(energy / 190);
+        numberOfParts = Math.min(numberOfParts, Math.floor(50 / 4));
+        var body = [];
+        for (let i = 0; i < numberOfParts; i++) {
+          body.push(TOUGH);
+        }
+        for (let i = 0; i < numberOfParts; i++) {
+          body.push(MOVE,MOVE);
+        }
+        for (let i = 0; i < numberOfParts; i++) {
+          body.push(ATTACK);
+        }
+        var nameFromRole = ('powerAttacker' + targetRoom + Game.time);
+        var home = this.room;
 
-                var nameFromRole = ('powerHealer' + targetRoom + Game.time);
-                var home = this.room;
+        return this.spawnCreep(body, nameFromRole, {
+            memory: {
+                role: 'powerAttacker',
+                targetRoom: targetRoom,
+                home: this.room,
+                powerSourceAvailable: true
+            }
+        });
+    };
 
-                return this.spawnCreep(body, nameFromRole, {
-                    memory: {
-                        role: 'powerHealer',
-                        targetRoom: targetRoom,
-                        home: this.room,
-                        powerSourceAvailable: true
-                    }
-                });
-            };
+//Spawn a powerHealer !!!!Future improvements needed to pair with attacker
+StructureSpawn.prototype.spawnPowerHealer =
+    function (energy, targetRoom) {
+        var minNumberOfCarryParts = 1;
+        var minNumberOfMoveParts = 2;
+        var minNumberofHealParts = 1;
+        // Body energy is 250+50+50+50=400
+        var numberOfParts = Math.floor(energy / 400);
+        numberOfParts = Math.min(numberOfParts, Math.floor(50 / 4));
+        var body = [];
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(MOVE,MOVE);
+        }
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(HEAL);
+        }
+        for (let i = 0; i < numberOfParts; i++) {
+            body.push(CARRY);
+        }
+
+        var nameFromRole = ('powerHealer' + targetRoom + Game.time);
+        var home = this.room;
+
+        return this.spawnCreep(body, nameFromRole, {
+            memory: {
+                role: 'powerHealer',
+                targetRoom: targetRoom,
+                home: this.room,
+                powerSourceAvailable: true
+            }
+        });
+    };
