@@ -1,23 +1,19 @@
-// First the spawn code with our defined body.[TOUGH,MOVE,MOVE,ATTACK]
-// Should place all toughs, then all moves, then all attacks
+// First the spawn code with our defined body.[MOVE,ATTACK]
+// Should place all moves, then all attacks
 // Must know energy available for spawn, target room, and room to return to
 // Need to create spawnIDs to help associate pairs
 
 /*
 StructureSpawn.prototype.spawnPowerAttacker =
     function (energy, targetRoom, home) {
-        var minNumberOfToughParts = 1;
-        var minNumberOfMoveParts = 2;
+        var minNumberOfMoveParts = 1;
         var minNumberofAttackParts = 1;
-        // Body energy is 80+10+50+50=190
-        var numberOfParts = Math.floor(energy / 190);
-        numberOfParts = Math.min(numberOfParts, Math.floor(50 / 4));
+        // Body energy is 80+50=130
+        var numberOfParts = Math.floor(energy / 130);
+        numberOfParts = Math.min(numberOfParts, Math.floor(50 / 2));
         var body = [];
         for (let i = 0; i < numberOfParts; i++) {
-          body.push(TOUGH);
-        }
-        for (let i = 0; i < numberOfParts; i += 2) {
-          body.push(MOVE,MOVE);
+          body.push(MOVE);
         }
         for (let i = 0; i < numberOfParts; i++) {
           body.push(ATTACK);
@@ -50,12 +46,14 @@ module.exports = {
         if (creep.memory.powerSourceAvailable == true) {
             // Once in target room, find the power bank
             if (creep.room.name == targetRoom) {
-                var targetPowerBank = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                let targetPowerBank = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                             filter: (s) => (s.structureType == STRUCTURE_POWER_BANK)
                                     && (s.hits > 0)});
                 // If there's a powerbank, then move to and attack it
                 if (targetPowerBank != undefined) {
-                    creep.attackPowerBank(targetPowerBank);
+                    if (creep.attackPowerBank(targetPowerBank) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(targetPowerBank, {reusePath: 50});
+                    }
                 }
                 // if power bank disappears or has nothing left to farm
                 if (targetPowerBank == undefined) {
@@ -67,7 +65,7 @@ module.exports = {
               // find exit to target room
               var exit = creep.room.findExitTo(creep.memory.targetRoom);
               // and move to exit
-              creep.moveTo(creep.pos.findClosestByRange(exit), {reusePath: 30});
+              creep.moveTo(creep.pos.findClosestByRange(exit), {reusePath: 50});
             }
         }
         if (creep.memory.powerSourceAvailable == false) {
@@ -76,7 +74,7 @@ module.exports = {
                 // find exit to target room
                 var exit = creep.room.findExitTo(creep.memory.home);
                 // and move to exit
-                creep.moveTo(creep.pos.findClosestByRange(exit), {reusePath: 30});
+                creep.moveTo(creep.pos.findClosestByRange(exit), {reusePath: 50});
             }
             if (creep.room == home) {
                 creep.memory.recycle = true
@@ -88,6 +86,9 @@ module.exports = {
                     if (creep.room.name == creep.memory.home) {
                         if (creep.pos.getRangeTo(closestSpawn) > 1) {
                             creep.moveTo(closestSpawn, {reusePath: 30});
+                        }
+                        else {
+                            closestSpawn.recycleCreep(creep);
                         }
                     }
                 }

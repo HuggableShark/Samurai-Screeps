@@ -68,7 +68,7 @@ module.exports = {
                     }
                 }
                 const droppedPower = creep.room.find(FIND_DROPPED_RESOURCES, {
-                    filter: (p) => RESOURCE_POWER
+                    filter: (p) => p.resourceType == RESOURCE_POWER
                 });
                 if (allies == undefined) {
                     if (droppedPower != undefined) {
