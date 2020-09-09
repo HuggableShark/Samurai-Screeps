@@ -2,74 +2,85 @@
 //  own role since there is SO much energy that can be dumped into them. Uses a %
 //  over time to chose how much to add.
 
-var roleBuilder = require('role.builder');
+var roleRepairer = require('role.repairer');
 
 module.exports = {
     // a function to run the logic for this role
-    run: function(creep) {
-        // if creep is trying to repair something but has no energy left
-        if (creep.memory.working == true && creep.carry.energy == 0) {
-            // switch state
-            creep.memory.working = false;
-        }
-        // if creep is harvesting energy but is full
-        else if (creep.memory.working == false && creep.carry.energy == creep.carryCapacity) {
-            // switch state
-            creep.memory.working = true;
-        }
+    run: function (creep) {
+        // Check working status
+        creep.checkWorkingStatus();
 
-        if (Game.cpu.bucket >= 5000) {
-            // if creep is supposed to repair something
-            if (creep.memory.working == true) {
-                // find all walls in the room
-                var borders = creep.room.find(FIND_STRUCTURES, {
-                    filter: (s) => s.structureType == STRUCTURE_RAMPART
-                            || s.structureType == STRUCTURE_WALL
-                    });
-
-                var target = undefined;
-
-                // loop with increasing percentages
-                for (let percentage = 0.0001; percentage <= 1; percentage = percentage + 0.0001){
-                    for (let border of borders) {
-                        if (border.hits / border.hitsMax < percentage) {
-                            target = border;
-                            break
-                        }
+        // First check if you need to be recycled
+        if (creep.ticksToLive < 200 && creep.store.getUsedCapacity() == 0) {
+            creep.memory.recycle = true
+            creep.say('reuse me!');
+            var closestSpawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (s) => (s.structureType == STRUCTURE_SPAWN)
+            });
+            if (creep.memory.recycle = true) {
+                if (closestSpawn != null) {
+                    if (creep.pos.getRangeTo(closestSpawn) > 1) {
+                        creep.moveTo(closestSpawn, { reusePath: 50, maxOps: 500 });
                     }
-                    if (target != undefined) {
-                        // break the loop
-                        break;
+                    else {
+                        closestSpawn.recycleCreep(creep);
                     }
-                }
-
-                // if we find a wall that has to be repaired
-                if (target != undefined) {
-                    // try to repair it, if not in range, go to it
-                    if (creep.repair(target) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(target, {reusePath: 15});
-                    }
-                }
-                // if we can't find one
-                else {
-                    // look for construction sites
-                    roleBuilder.run(creep);
                 }
             }
-            // if creep is supposed to harvest energy from source
-            else {
-                let storage = creep.room.storage;
-                // First get it from storage
-                if (storage != undefined && creep.room.storage.store[RESOURCE_ENERGY] > 0) {
-                    if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(storage, {reusePath: 15});
+        }
+        
+        else {
+            if (Game.cpu.bucket >= 5000 && creep.room.storage && creep.room.storage.store[RESOURCE_ENERGY] > 2000) {
+                // if creep is supposed to repair something
+                if (creep.memory.working == true) {
+                    // find all walls in the room
+                    if (!(creep.memory.borders)) {
+                        let currentBorders = creep.room.find(FIND_STRUCTURES, {
+                            filter: (s) => (s.structureType == STRUCTURE_RAMPART
+                                || s.structureType == STRUCTURE_WALL)
+                                && s.hits < s.hitsMax
+                        });
+                        creep.memory.borders = currentBorders
+                    }
+                    creep.memory.bordersAmount = creep.memory.borders.length
+                    if (Game.time % 100) {
+                        let updatedBorders = creep.room.find(FIND_STRUCTURES, {
+                            filter: (s) => (s.structureType == STRUCTURE_RAMPART
+                                || s.structureType == STRUCTURE_WALL)
+                                && s.hits < s.hitsMax
+                        });
+                        if (updatedBorders.length != creep.memory.bordersAmount) {
+                            creep.memory.borders = updatedBorders
+                        }
+                    }
+                    var borders = creep.memory.borders;
+                    borders = borders.sort((a, b) => a.hits - b.hits);
+
+
+                    // if we find a wall that has to be repaired
+                    if (borders.length > 0) {
+                        // try to repair it, if not in range, go to it
+                        if (creep.repair(Game.getObjectById(borders[0].id)) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(Game.getObjectById(borders[0].id), { reusePath: 50, maxOps: 500 });
+                        }
+                    }
+                    // if we can't find one
+                    else {
+                        // look for construction sites
+                        roleRepairer.run(creep);
                     }
                 }
-                // otherwise, get it from containers/sources
+                // if creep is supposed to harvest energy from source
                 else {
-                    creep.getEnergy(true, true);
+                    creep.getEnergy(true, true, true);
                 }
+            }
+            else {
+                roleRepairer.run(creep);
             }
         }
     }
 };
+
+
+               
